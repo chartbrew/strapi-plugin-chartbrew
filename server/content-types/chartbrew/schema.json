@@ -1,0 +1,23 @@
+{
+  "kind": "singleType",
+  "collectionName": "chartbrews",
+  "info": {
+    "singularName": "chartbrew",
+    "pluralName": "chartbrews",
+    "displayName": "Chartbrew"
+  },
+  "options": {
+    "draftAndPublish": false,
+    "comment": ""
+  },
+  "attributes": {
+    "host": {
+      "type": "string",
+      "required": true
+    },
+    "token": {
+      "type": "string",
+      "required": true
+    }
+  }
+}

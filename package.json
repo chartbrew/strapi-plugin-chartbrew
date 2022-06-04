@@ -1,0 +1,39 @@
+{
+  "name": "@chartbrew/plugin-strapi",
+  "version": "0.1.0",
+  "description": "Strapi plugin for integrating Chartbrew in the Strapi dashboard",
+  "strapi": {
+    "name": "Chartbrew",
+    "description": "Explore your Strapi data with Chartbrew visualizations",
+    "kind": "plugin",
+    "displayName": "Chartbrew"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Razvan Ilin",
+    "email": "razvanilin@gmail.com",
+    "url": "https://chartbrew.com"
+  },
+  "dependencies": {
+    "chart.js": "^3.8.0",
+    "chartjs-plugin-datalabels": "^2.0.0",
+    "react-chartjs-2": "^4.1.0",
+    "request-promise": "^4.2.6",
+    "uuid": "^3.4.0"
+  },
+  "maintainers": [
+    {
+      "name": "Razvan Ilin",
+      "email": "razvanilin@gmail.com",
+      "url": "https://chartbrew.com"
+    }
+  ],
+  "engines": {
+    "node": ">=12.x.x <=16.x.x",
+    "npm": ">=6.0.0"
+  },
+  "devDependencies": {
+    "@strapi-community/eslint-config": "^0.4.3",
+    "eslint": "^8.17.0"
+  }
+}
