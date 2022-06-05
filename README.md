@@ -94,7 +94,7 @@ Or if you are using `yarn`:
 yarn build
 ```
 
-# Plugin settings
+# ⚙️ Plugin settings
 
 In order for the plugin to work properly, it needs the right credentials to authenticate with Chartbrew.
 
