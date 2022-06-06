@@ -59,13 +59,13 @@ Navigate to the root of your Strapi folder and run the installation commands bel
 With `npm`:
 
 ```
-npm install --save @chartbrew/strapi-plugin
+npm install --save @chartbrew/plugin-strapi
 ```
 
 With `yarn`:
 
 ```
-yarn add @chartbrew/strapi-plugin
+yarn add @chartbrew/plugin-strapi
 ```
 
 Add the following attribute in the `config/plugins.js` file:
