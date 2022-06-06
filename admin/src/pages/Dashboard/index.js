@@ -154,7 +154,7 @@ function Dashboard() {
               content="It looks like you don't have a dashboard yet"
               action={(
                 <LinkButton variant="secondary" startIcon={<Plus />} to={`/plugins/${pluginId}/create`}>
-                  Create your fist dashboard
+                  Create your first dashboard
                 </LinkButton>
               )}
             />
@@ -201,7 +201,7 @@ function Dashboard() {
                 {team && (
                   <LinkButton
                     href={`${store.clientHost}/${team.id}/${store.defaultProject}/dashboard`}
-                    variant="secondary"
+                    variant="tertiary"
                     target="_blank"
                     rel="noopener"
                     endIcon={<ExternalLink />}
@@ -209,6 +209,15 @@ function Dashboard() {
                     Edit dashboard in Chartbrew
                   </LinkButton>
                 )}
+                <LinkButton
+                  href="https://chartbrew.com/blog/create-your-strapi-visualization-dashboard-with-chartbrew?utm_source=strapi_plugin"
+                  variant="tertiary"
+                  target="_blank"
+                  rel="noopener"
+                  endIcon={<ExternalLink />}
+                >
+                  How to use Chartbrew with Strapi
+                </LinkButton>
               </Stack>
             </Box>
 
