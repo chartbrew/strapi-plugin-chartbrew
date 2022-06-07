@@ -10,7 +10,7 @@
 
 <p align="center">
   <strong>
-    This is the official <a href="https://chartbrew.com">Chartbrew</a> plugin for Strapi v4. Chartbrew is an open-source web application that can connect directly to Strapi and other data sources and use the data to create beautiful charts. It features a chart builder, editable dashboards, embedable charts, query & requests editor, and team capabilities.
+    This is the official <a href="https://chartbrew.com">Chartbrew</a> plugin for <a href="https://strapi.io">Strapi v4</a>. Chartbrew is an open-source web application that can connect directly to Strapi and other data sources and use the data to create beautiful charts. It features a chart builder, editable dashboards, embedable charts, query & requests editor, and team capabilities.
   </strong>
 </p>
 
