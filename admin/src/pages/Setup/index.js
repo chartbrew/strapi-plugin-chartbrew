@@ -38,6 +38,7 @@ function Dashboard() {
   const [strapiToken, setStrapiToken] = useState('');
   const [savingToken, setSavingToken] = useState(false);
   const [hasToken, setHasToken] = useState(false);
+  const [localAlert, setLocalAlert] = useState(false);
 
   useEffect(() => {
     // get plugin settings
@@ -83,6 +84,12 @@ function Dashboard() {
         setSaved(true);
         setLoading(false);
         setChartbrewUser(user);
+
+        if (process.env.STRAPI_ADMIN_BACKEND_URL.indexOf("http://localhost") > -1
+          && host.indexOf("http://localhost") === -1
+        ) {
+          setLocalAlert(true);
+        }
       })
       .catch(() => {
         setSaved(false);
@@ -312,6 +319,19 @@ function Dashboard() {
                   onClose={() => setSaved(false)}
                 >
                   {'Successfully authenticated with Chartbrew. Head over to your dashboard to get started. '}
+                </Alert>
+              </Box>
+            )}
+
+            {localAlert && (
+              <Box paddingTop={4}>
+                <Alert
+                  closeLabel="Close alert"
+                  title={"Chartbrew might not be able to create charts"}
+                  variant="default"
+                  onClose={() => setLocalAlert(false)}
+                >
+                  {'It seems you are running Strapi on your local machine and you are connecting to a Chartbrew instance that is hosted on an external server. You might not be able to create new visualizations from your Strapi data, but you can create the charts in Chartbrew and then see them in your Strapi dashboard. '}
                 </Alert>
               </Box>
             )}
