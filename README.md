@@ -24,7 +24,7 @@
 
 <br />
 
-# ✨ Plugin features
+## ✨ Plugin features
 
 * Explore your Chartbrew dashboards directly on Strapi
 * Multi-dashboard support, can switch between them
@@ -32,18 +32,18 @@
 * Add charts to existing dashboards straight from Strapi
 * The charts are kept up-to-date automatically (you can set an update schedule on Chartbrew)
 
-# 👋 Get started with Chartbrew
+## 👋 Get started with Chartbrew
 
 To use this plugin, you will need to have a Chartbrew account, or self-host the platform.
 
-## Chartbrew account
+### Chartbrew account
 
 Chartbrew is offered as a managed service in exchange for a montly subscription. This is the fastest way to get started and create visualizations in Strapi. Follow the instructions below to get started:
 
 1. [Create a new account here](https://app.chartbrew.com/signup)
 2. [Follow this tutorial](https://chartbrew.com/blog/how-to-create-api-keys-in-chartbrew/) to get a Chartbrew API Key to use for Strapi
 
-## Self-hosting
+### Self-hosting
 
 Chartbrew is 100% open-source and can be self-hosted. Check out some links to get you started:
 
@@ -52,7 +52,7 @@ Chartbrew is 100% open-source and can be self-hosted. Check out some links to ge
 * 🐳 [Get started with the Chartbrew Docker image](https://docs.chartbrew.com/deployment/#run-the-application-with-docker)
 * 🚀 [Deploy Chartbrew on Heroku & Vercel](https://chartbrew.com/blog/how-to-deploy-chartbrew-on-heroku-and-vercel/)
 
-# 🔧 Plugin Installation
+## 🔧 Plugin Installation
 
 Navigate to the root of your Strapi folder and run the installation commands below.
 
@@ -94,7 +94,7 @@ Or if you are using `yarn`:
 yarn build
 ```
 
-# ⚙️ Plugin settings
+## ⚙️ Plugin settings
 
 In order for the plugin to work properly, it needs the right credentials to authenticate with Chartbrew.
 
@@ -102,7 +102,7 @@ The plugin can also create charts straight from Strapi, but this needs access to
 
 Follow the instructions below to learn how to configure the plugin.
 
-## Chartbrew connection
+### Chartbrew connection
 
 If you self-host Chartbrew, you will have to enter the frontend and backend addresses. The default values are:
 
@@ -117,7 +117,7 @@ If you want to use the plugin with a managed service account at [chartbrew.com](
   </a>
 </p>
 
-## Create charts from Strapi
+### Create charts from Strapi
 
 You can create charts directly from your Strapi dashboards. To do this, you will need to create a Strapi API Token and add it in the Chartbrew settings page.
 
@@ -127,6 +127,6 @@ You can create charts directly from your Strapi dashboards. To do this, you will
   </a>
 </p>
 
-# ⚠️ Dependencies
+## ⚠️ Dependencies
 
 * Strapi v4+
