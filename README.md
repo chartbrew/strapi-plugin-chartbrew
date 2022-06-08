@@ -18,7 +18,7 @@
 
 <p align="center">
   <a href="https://chartbrew.com">
-    <img src="https://raw.githubusercontent.com/chartbrew/strapi-plugin-chartbrew/master/admin/src/assets/strapi-chartbrew-dashboard.jpg" alt="Chartbrew dashboard in Strapi" width="600"/>
+    <img src="https://raw.githubusercontent.com/chartbrew/strapi-plugin-chartbrew/master/admin/src/assets/strapi-chartbrew-dashboard.jpg" alt="Chartbrew dashboard in Strapi" width="600" height="340" />
   </a>
 </p>
 
@@ -109,11 +109,11 @@ If you self-host Chartbrew, you will have to enter the frontend and backend addr
 * Frontend: `http://localhost:4018`
 * Backend: `http://localhost:4019`
 
-If you want to use the plugin with a managed service account at [chartbrew.com](https://chartbrew.com), click on the "Use managed Chartbrew address" button as shown below:
+If you want to use the plugin with a managed service account at [chartbrew.com](https://chartbrew.com), click on the **Use managed Chartbrew address** button as shown below:
 
 <p align="center">
   <a href="https://chartbrew.com">
-    <img src="https://raw.githubusercontent.com/chartbrew/strapi-plugin-chartbrew/master/admin/src/assets/chartbrew-connection.jpg" alt="Chartbrew dashboard in Strapi" width="600"/>
+    <img src="https://raw.githubusercontent.com/chartbrew/strapi-plugin-chartbrew/master/admin/src/assets/chartbrew-connection.jpg" alt="Chartbrew dashboard in Strapi" width="600" height="300" />
   </a>
 </p>
 
@@ -123,7 +123,7 @@ You can create charts directly from your Strapi dashboards. To do this, you will
 
 <p align="center">
   <a href="https://chartbrew.com">
-    <img src="https://raw.githubusercontent.com/chartbrew/strapi-plugin-chartbrew/master/admin/src/assets/strapi-auth.jpg" alt="Chartbrew dashboard in Strapi" width="600"/>
+    <img src="https://raw.githubusercontent.com/chartbrew/strapi-plugin-chartbrew/master/admin/src/assets/strapi-auth.jpg" alt="Chartbrew dashboard in Strapi" width="600" height="300" />
   </a>
 </p>
 
