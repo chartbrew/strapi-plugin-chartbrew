@@ -20,7 +20,7 @@
 
 <br />
 
-![](./admin/src/assets/strapi-chartbrew-dashboard.jpg)
+![](https://raw.githubusercontent.com/chartbrew/strapi-plugin-chartbrew/master/admin/src/assets/strapi-chartbrew-dashboard.jpg)
 
 <br />
 
@@ -111,13 +111,13 @@ If you self-host Chartbrew, you will have to enter the frontend and backend addr
 
 If you want to use the plugin with a managed service account at [chartbrew.com](https://chartbrew.com), click on the **Use managed Chartbrew address** button as shown below:
 
-![](./admin/src/assets/chartbrew-connection.jpg)
+![](https://raw.githubusercontent.com/chartbrew/strapi-plugin-chartbrew/master/admin/src/assets/chartbrew-connection.jpg)
 
 ### Create charts from Strapi
 
 You can create charts directly from your Strapi dashboards. To do this, you will need to create a Strapi API Token and add it in the Chartbrew settings page.
 
-![](./admin/src/assets/strapi-auth.jpg)
+![](https://raw.githubusercontent.com/chartbrew/strapi-plugin-chartbrew/master/admin/src/assets/strapi-auth.jpg)
 
 ## ⚠️ Dependencies
 
