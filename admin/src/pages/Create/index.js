@@ -196,11 +196,11 @@ function Create() {
 
           {collection.uid && (
             <Box>
-              <Box padding={6}>
+              <Box paddingTop={6} paddingBottom={6}>
                 <Divider />
               </Box>
 
-              <Box paddingTop={2}>
+              <Box>
                 <Typography variant="delta">{'Timestamp settings '}</Typography>
               </Box>
               <Box paddingTop={2}>
@@ -237,13 +237,13 @@ function Create() {
               <Box paddingTop={6}>
                 <Typography variant="delta">{'Select the charts you want to create '}</Typography>
                 <Box>
-                  <Typography>{'(More will be added later) '}</Typography>
+                  <Typography textColor="neutral600">{'(More will be added later) '}</Typography>
                 </Box>
               </Box>
-              <Box paddingTop={2}>
-                <Grid gap={[3, 2, 2 ]}>
+              <Box paddingTop={4}>
+                <Grid gap={[4, 4, 4 ]}>
                   {templateCharts.map((chart) => (
-                    <GridItem col={2} s={4} xs={6} key={chart.tid}>
+                    <GridItem col={3} s={4} xs={6} key={chart.tid}>
                       <Checkbox
                         checked={selectedCharts.indexOf(chart.tid) > -1}
                         onClick={() => _onToggleChart(chart)}
@@ -255,14 +255,14 @@ function Create() {
                 </Grid>
               </Box>
               
-              <Box padding={6}>
+              <Box paddingTop={6} paddingBottom={6}>
                 <Divider />
               </Box>
               
-              <Box paddingTop={6}>
+              <Box>
                 <Typography variant="delta">{'Choose a dashboard where to place the charts '}</Typography>
                 <Box>
-                  <Typography>{'Or leave empty to create a new dashboard '}</Typography>
+                  <Typography textColor="neutral600">{'Or leave empty to create a new dashboard '}</Typography>
                 </Box>
               </Box>
               <Box paddingTop={2}>

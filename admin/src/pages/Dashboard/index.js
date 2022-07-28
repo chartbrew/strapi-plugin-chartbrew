@@ -178,7 +178,7 @@ function Dashboard() {
         )}
 
         {!pageLoading && store.defaultProject && user.id && projects.length > 0 && (
-          <Box padding={4}>
+          <Box>
             <Combobox
               label="Select a Chartbrew dashboard"
               placeholder="Select a dashboard"
@@ -239,11 +239,11 @@ function Dashboard() {
                     hasRadius
                     background="neutral0"
                     shadow="tableShadow"
-                    col={(12 - (12 / chart.chartSize)) || 3}
+                    col={(12 - (12 / chart.chartSize)) || 4}
                     s={12}
                     style={{ height: 320 }}
                   >
-                    <Typography>{chart.name}</Typography>
+                    <Typography variant="delta">{chart.name}</Typography>
                     {chart.chartData && chart.type === 'line' && (
                       <LineChart chart={chart} />
                     )}
@@ -263,6 +263,9 @@ function Dashboard() {
                     )}
                     {chart.type === 'polar' && (
                       <PolarChart chart={chart} />
+                    )}
+                    {chart.type === 'avg' && (
+                      <LineChart chart={chart} />
                     )}
                   </GridItem>
                 ))}
