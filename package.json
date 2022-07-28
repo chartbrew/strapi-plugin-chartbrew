@@ -1,6 +1,6 @@
 {
   "name": "@chartbrew/plugin-strapi",
-  "version": "0.2.7",
+  "version": "0.3.0",
   "description": "Strapi plugin for integrating Chartbrew in the Strapi dashboard",
   "strapi": {
     "name": "chartbrew",
