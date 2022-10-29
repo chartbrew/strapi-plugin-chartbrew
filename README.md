@@ -38,7 +38,7 @@ To use this plugin, you will need to have a Chartbrew account, or self-host the 
 
 ### Chartbrew account
 
-Chartbrew is offered as a managed service in exchange for a montly subscription. This is the fastest way to get started and create visualizations in Strapi. Follow the instructions below to get started:
+Chartbrew is offered as a managed service in exchange for a monthly subscription. This is the fastest way to get started and create visualizations in Strapi. Follow the instructions below to get started:
 
 1. [Create a new account here](https://app.chartbrew.com/signup)
 2. [Follow this tutorial](https://chartbrew.com/blog/how-to-create-api-keys-in-chartbrew/) to get a Chartbrew API Key to use for Strapi
