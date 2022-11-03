@@ -18,7 +18,7 @@ async function createDefaultConfig() {
   const pluginStore = getPluginStore();
   const value = {
     host: 'https://api.chartbrew.com',
-    clientHost: 'https://api.chartbrew.com',
+    clientHost: 'https://app.chartbrew.com',
     token: '',
     hasToken: false,
   };

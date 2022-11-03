@@ -137,7 +137,7 @@ function Create() {
       })
       .then(() => {
         setTimeout(() => {
-          location.pathname = `/plugins/${pluginId}`; // eslint-disable-line
+          location.pathname = `/admin/plugins/${pluginId}`;
           setGenerating(false);
         }, 1000);
       })
