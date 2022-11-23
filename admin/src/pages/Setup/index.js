@@ -255,7 +255,7 @@ function Dashboard() {
                   <FieldLabel>Your Strapi backend URL</FieldLabel>
                   <FieldInput
                     type="text"
-                    placeholder="Enter your Strapi Backend URL"
+                    placeholder="'https://you-strapi-url.com' or 'http://localhost:1337' for local env"
                     value={strapiHost}
                     onChange={(e) => setStrapiHost(e.target.value)}
                   />
