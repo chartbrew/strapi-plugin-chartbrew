@@ -40,7 +40,6 @@ module.exports = createCoreService('plugin::chartbrew.chartbrew', {
   },
 
   async setSettings(settings) {    
-    console.log("settings", settings);
     const pluginStore = getPluginStore();
     const config = await pluginStore.get({ key: 'settings' });
 
@@ -49,8 +48,6 @@ module.exports = createCoreService('plugin::chartbrew.chartbrew', {
     if (!newConfig.strapiToken) {
       newConfig.hasToken = false;
     }
-
-    console.log("newConfig", newConfig);
 
     await pluginStore.set({ key: 'settings', value: newConfig });
 
@@ -69,7 +66,6 @@ module.exports = createCoreService('plugin::chartbrew.chartbrew', {
     // get the api prefix
     const apiEndpoint = strapi.config.api?.rest?.prefix?.replace('/', '');
     templateData.apiEndpoint = apiEndpoint;
-    console.log("strapi.config", strapi.config);
 
     let project;
     // create a new project first
