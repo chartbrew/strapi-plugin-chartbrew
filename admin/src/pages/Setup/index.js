@@ -27,9 +27,12 @@ import { getSettings, setSettings } from '../../actions/store';
 const defaultHost = 'https://api.chartbrew.com';
 const defaultClientHost = 'https://app.chartbrew.com';
 
+const strapiHostEnv = process.env.STRAPI_ADMIN_BACKEND_URL
+
 function Dashboard() {
   const [host, setHost] = useState(defaultHost);
   const [clientHost, setClientHost] = useState(defaultClientHost);
+  const [strapiHost, setStrapiHost] = useState(strapiHostEnv || "");
   const [token, setToken] = useState('');
   const [loading, setLoading] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -48,6 +51,7 @@ function Dashboard() {
         setClientHost(data.clientHost);
         setToken(data.token);
         setHasToken(data.hasToken);
+        setStrapiHost(data.strapiHost);
       });
   }, []);
 
@@ -65,7 +69,7 @@ function Dashboard() {
     setError(false);
     setLoading(true);
 
-    setSettings({ clientHost, host, token })
+    setSettings({ clientHost, host, token, strapiHost })
       .then(() => {
         return fetch(`${host}/user/relog`, {
           method: 'POST',
@@ -240,6 +244,20 @@ function Dashboard() {
                     placeholder="Enter your Chartbrew API host"
                     value={host}
                     onChange={(e) => setHost(e.target.value)}
+                  />
+                </Stack>
+              </Field>
+            </Box>
+
+            <Box paddingTop={4}>
+              <Field name="host">
+                <Stack spacing={1}>
+                  <FieldLabel>Your Strapi backend URL</FieldLabel>
+                  <FieldInput
+                    type="text"
+                    placeholder="Enter your Strapi Backend URL"
+                    value={strapiHost}
+                    onChange={(e) => setStrapiHost(e.target.value)}
                   />
                 </Stack>
               </Field>

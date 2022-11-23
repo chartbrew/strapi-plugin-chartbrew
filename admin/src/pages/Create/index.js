@@ -25,8 +25,6 @@ import { generateTemplate, getProjectConnections, getProjects } from '../../acti
 import { getStrapiTemplate, getUserTeam } from '../../actions/team';
 import { login } from '../../actions/user';
 
-const strapiHost = process.env.STRAPI_ADMIN_BACKEND_URL; // eslint-disable-line
-
 function Create() {
   const [collection, setCollection] = useState({});
   const [models, setModels] = useState([]);
@@ -43,6 +41,7 @@ function Create() {
   const [userTeam, setUserTeam] = useState({});
   const [planLimits, setPlanLimits] = useState(false);
   const [store, setStore] = useState({});
+  const [generationError, setGenerationError] = useState(false);
   
   useEffect(() => {
     getSettings()
@@ -110,7 +109,6 @@ function Create() {
 
   const _onGenerateCharts = async () => {
     const data = {
-      strapiHost,
       createdField: createdAt,
       updatedField: updatedAt,
       collection: collection.pluralName,
@@ -122,7 +120,7 @@ function Create() {
     if (selectedProject && selectedProject.id) {
       const connections = await getProjectConnections(selectedProject.id);
       const strapiConnection = connections.filter((c) => {
-        return c.host.indexOf(strapiHost) > -1;
+        return c.host.indexOf(store.strapiHost) > -1;
       })[0];
 
       if (strapiConnection && strapiConnection.id) {
@@ -144,10 +142,23 @@ function Create() {
       .catch((err) => {
         if (err && err.message && err.message.indexOf("406") > -1) {
           setPlanLimits(true);
+        } else {
+          setGenerationError(true);
         }
         setGenerating(false);
       });
   };
+
+  const _isLocalConnectingToManaged = () => {
+    if (store.strapiHost
+      && store.strapiHost.indexOf("http://localhost") > -1
+      && store.host.indexOf("https://api.chartbrew.com") > -1
+    ) {
+      return true;
+    }
+
+    return false;
+  }
 
   return (
     <div>
@@ -162,6 +173,19 @@ function Create() {
       />
       <ContentLayout>
         <Box padding={6} shadow="filterShadow" background="neutral0">
+          {!settingsLoading && store.strapiHost && _isLocalConnectingToManaged() && (
+            <Box paddingBottom={4}>
+              <Alert
+                closeLabel="Close alert"
+                title="Chartbrew might not be able to create charts"
+                variant="danger"
+                action={(<Link to={`/settings/${pluginId}`}>Click here to go to settings</Link>)}
+                onClose={() => {}}
+              >
+                {"It looks like your Strapi Backend URL is on localhost. Chartbrew's server will not be able to access your localhost environment. Please update your Strapi Backend URL to something like https://my-strapi-backend.com or self-host Chartbrew on the same server as your Strapi Backend."}
+              </Alert>
+            </Box>
+          )}
           {!settingsLoading && !hasToken && (
             <Box paddingBottom={4}>
               <Alert
@@ -172,6 +196,19 @@ function Create() {
                 onClose={() => {}}
               >
                 {'In order to allow Chartbrew to create visualizations for you, please add a Strapi API token in the settings. '}
+              </Alert>
+            </Box>
+          )}
+          {!settingsLoading && !store.strapiHost && (
+            <Box paddingBottom={4}>
+              <Alert
+                closeLabel="Close alert"
+                title="Chartbrew cannot create charts from your Strapi data"
+                variant="danger"
+                action={(<Link to={`/settings/${pluginId}`}>Click here to go to settings</Link>)}
+                onClose={() => {}}
+              >
+                {'Your Strapi backend URL is missing from the Chartbrew settings. Set it up by going to the settings page. '}
               </Alert>
             </Box>
           )}
@@ -293,6 +330,20 @@ function Create() {
                   Create the charts
                 </Button>
               </Box>
+
+              {generationError && (
+                <Box paddingTop={4}>
+                  <Alert
+                    closeLabel="Close alert"
+                    title="The charts could not be created"
+                    variant="danger"
+                    action={(<Link to={`/settings/${pluginId}`}>Click here to go to settings</Link>)}
+                    onClose={() => setGenerationError(false)}
+                  >
+                    {'There was an error generating your charts. Please make sure all your settings are correct and try again.'}
+                  </Alert>
+                </Box>
+              )}
 
               {planLimits && (
                 <Box paddingTop={4}>
