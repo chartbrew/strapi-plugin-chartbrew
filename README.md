@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://chartbrew.com">
-    <img src="https://raw.githubusercontent.com/chartbrew/strapi-plugin-chartbrew/master/admin/src/assets/chartbrew-strapi-icons.png" alt="Chartbrew logo" width="200"/>
+    <img src="https://chartbrew-static.b-cdn.net/chartbrew-strapi-plugin-1.png" alt="Chartbrew logo" width="200"/>
   </a>
 </a>
 
