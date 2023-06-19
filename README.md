@@ -113,6 +113,41 @@ If you want to use the plugin with a managed service account at [chartbrew.com](
 
 ![](https://raw.githubusercontent.com/chartbrew/strapi-plugin-chartbrew/master/admin/src/assets/chartbrew-connection.jpg)
 
+### Cannot authenticate with Chartbrew
+
+[**Read more here**](https://github.com/chartbrew/strapi-plugin-chartbrew/issues/13)
+
+If you run both Strapi and Chartbrew on `localhost` or on a non-secure connection (http), you will need to tweak the Strapi security settings. To do this, open the `config/middlewares.js` file and add the following attribute:
+
+```
+module.exports = [
+...
+  {
+    name: 'strapi::security',
+    config: {
+      contentSecurityPolicy: {
+        useDefaults: true,
+        directives: {
+          'connect-src': ["'self'", 'http:', 'https:'],
+          upgradeInsecureRequests: null,
+        },
+      },
+    },
+  },
+...
+];
+```
+
+And don't forget to build the Strapi project again:
+
+```
+# npm
+npm run build
+
+# yarn
+yarn build
+```
+
 ### Create charts from Strapi
 
 You can create charts directly from your Strapi dashboards. To do this, you will need to create a Strapi API Token and add it in the Chartbrew settings page.
