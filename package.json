@@ -19,6 +19,7 @@
     "chartjs-plugin-datalabels": "^2.0.0",
     "moment": "^2.29.4",
     "react-chartjs-2": "^4.1.0",
+    "request": "^2.88.2",
     "request-promise": "^4.2.6",
     "uuid": "^3.4.0"
   },
