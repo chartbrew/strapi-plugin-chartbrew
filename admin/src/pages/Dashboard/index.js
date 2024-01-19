@@ -9,12 +9,14 @@ import React, { memo, useEffect, useState } from 'react';
 // import PropTypes from 'prop-types';
 import { HeaderLayout, ContentLayout } from '@strapi/design-system/Layout';
 import { Box } from '@strapi/design-system/Box';
+import { Flex } from '@strapi/design-system/Flex';
 import { LinkButton } from '@strapi/design-system/LinkButton';
 import { Link } from '@strapi/design-system/Link';
 import { Loader } from '@strapi/design-system/Loader';
 import { Typography } from '@strapi/design-system/Typography';
 import { Stack } from '@strapi/design-system/Stack';
 import { Combobox, ComboboxOption } from '@strapi/design-system/Combobox';
+import { SingleSelect, SingleSelectOption } from '@strapi/design-system/Select';
 import { Grid, GridItem } from '@strapi/design-system/Grid';
 import { Alert } from '@strapi/design-system/Alert';
 import { EmptyStateLayout } from '@strapi/design-system/EmptyStateLayout';
@@ -25,7 +27,7 @@ import ExternalLink from '@strapi/icons/ExternalLink';
 import pluginId from '../../pluginId';
 import { getSettings, setSettings } from '../../actions/store';
 import { login } from '../../actions/user';
-import { getProjects, getProjectCharts } from '../../actions/project';
+import { getProjectCharts } from '../../actions/project';
 import { getUserTeam } from '../../actions/team';
 import BarChart from '../../components/ChartbrewCharts/BarChart';
 import LineChart from '../../components/ChartbrewCharts/LineChart';
@@ -45,22 +47,13 @@ function Dashboard() {
   const [chartsLoading, setChartsLoading] = useState(true);
   const [authError, setAuthError] = useState(false);
   const [team, setTeam] = useState({});
+  const [teams, setTeams] = useState([]);
+  const [dropdownTeam, setDropdownTeam] = useState('');
 
   useEffect(() => {
     getSettings().then((data) => setStore(data));
     _init();
   }, []);
-
-  useEffect(() => {
-    if (store.defaultProject && projects.length > 0 && !dropdownProject) {
-      // set the value for the dropdown
-      const selectedProject = projects.filter((p) => p.id === store.defaultProject)[0];
-
-      if (selectedProject) {
-        setDropdownProject(`${selectedProject.name}-${selectedProject.id}`);
-      }
-    }
-  }, [projects, store, dropdownProject]);  
 
   useEffect(() => {
     if (store.defaultProject) {
@@ -74,18 +67,37 @@ function Dashboard() {
     }
   }, [store]);
 
+  useEffect(() => {
+    if (store.defaultTeam && teams.length > 0 && !dropdownTeam) {
+      // set the value for the dropdown
+      const selectedTeam = teams.find((t) => t.id === store.defaultTeam);
+      setProjects(selectedTeam.Projects);
+
+      if (selectedTeam) {
+        setDropdownTeam(`${selectedTeam.name}-${selectedTeam.id}`);
+
+        if (store.defaultProject) {
+          const selectedProject = selectedTeam.Projects.find((p) => p.id === store.defaultProject);
+
+          if (selectedProject) {
+            setDropdownProject(`${selectedProject.name}-${selectedProject.id}`);
+          }
+        }
+      }
+    }
+  }, [teams, store, dropdownTeam]);
+
   const _init = () => {
     login()
       .then(async (data) => {
         setUser(data);
 
         const teamData = await getUserTeam(data.id);
-        setTeam(teamData);
-        
-        return getProjects();
-      })
-      .then((data) => {
-        setProjects(data);
+        setTeams(teamData);
+        setTeam(teamData[0]);
+
+        setProjects(teamData[0]?.Projects || []);
+
         setPageLoading(false);
       })
       .catch(() => {
@@ -95,6 +107,7 @@ function Dashboard() {
   };
 
   const _onSelectProject = (projectValue) => {
+    if (!projectValue) return;
     const project = projects.filter((p) => `${p.name}-${p.id}` === projectValue)[0];
     setDropdownProject(`${project.name}-${project.id}`);
     setSettings({ defaultProject: project.id })
@@ -103,6 +116,20 @@ function Dashboard() {
       })
       .then((data) => setStore(data));
 
+  };
+
+  const _onSelectTeam = (teamValue) => {
+    if (!teamValue) return;
+    const selectedTeam = teams.filter((t) => `${t.name}-${t.id}` === teamValue)[0];
+    setTeam(selectedTeam);
+    setDropdownTeam(`${selectedTeam.name}-${selectedTeam.id}`);
+    setDropdownProject('');
+    setProjects(selectedTeam.Projects);
+    setSettings({ defaultTeam: selectedTeam.id })
+      .then(() => {
+        return getSettings();
+      })
+      .then((data) => setStore(data));
   };
 
   return (
@@ -121,7 +148,7 @@ function Dashboard() {
           <Loader>Loading your dashboard...</Loader>
         )}
 
-        {!pageLoading && !store.defaultProject && user.id && projects && (
+        {!pageLoading && !store.defaultTeam && user.id && teams && (
           <Box padding={4} shadow="filterShadow" background="neutral0">
             <Stack spacing={1}>
               <Typography variant="beta">{'Let\'s set up your first dashboard '}</Typography>
@@ -129,25 +156,39 @@ function Dashboard() {
                 {'Select a Chartbrew dashboard to load it in Strapi '}
               </Typography>
             </Stack>
-            <Box paddingTop={4}>
+            <Flex paddingTop={4}>
+              <SingleSelect
+                label="Select a Chartbrew team"
+                value={dropdownTeam}
+                onChange={_onSelectTeam}
+              >
+                {teams.map((t) => {
+                  return (
+                    <SingleSelectOption key={t.id} value={`${t.name}-${t.id}`}>
+                      {t.name}
+                    </SingleSelectOption>
+                  );
+                })}
+              </SingleSelect>
+
               <Combobox
-                label="Select a Chartbrew dashboard"
+                label="Select a Chartbrew dashboardd"
                 value={dropdownProject}
                 onChange={_onSelectProject}
               >
-                {projects.map((project) => {
+                {projects.map((p) => {
                   return (
-                    <ComboboxOption key={project.id} value={`${project.name}-${project.id}`}>
-                      {project.name}
+                    <ComboboxOption key={p.id} value={`${p.name}-${p.id}`}>
+                      {p.name}
                     </ComboboxOption>
                   );
                 })}
               </Combobox>
-            </Box>
+            </Flex>
           </Box>
         )}
 
-        {!pageLoading && !authError && user.id && projects.length === 0 && (
+        {!pageLoading && !authError && user.id && team && projects.length === 0 && (
           <Box padding={4}>
             <EmptyStateLayout
               icon={<Illo />}
@@ -177,24 +218,43 @@ function Dashboard() {
           </Box>
         )}
 
-        {!pageLoading && store.defaultProject && user.id && projects.length > 0 && (
+        {!pageLoading && store.defaultTeam && user.id && projects.length > 0 && (
           <Box>
-            <Combobox
-              label="Select a Chartbrew dashboard"
-              placeholder="Select a dashboard"
-              value={dropdownProject}
-              onChange={_onSelectProject}
-              loading={chartsLoading}
-              loadingMessage="Fetching the charts..."
-            >
-              {projects.map((project) => {
-                return (
-                  <ComboboxOption key={project.id} value={`${project.name}-${project.id}`}>
-                    {project.name}
-                  </ComboboxOption>
-                );
-              })}
-            </Combobox>
+            <Flex>
+              <Box paddingRight={4}>
+                <SingleSelect
+                  label="Select a Chartbrew team"
+                  value={dropdownTeam}
+                  onChange={_onSelectTeam}
+                >
+                  {teams.map((t) => {
+                    return (
+                      <SingleSelectOption key={t.id} value={`${t.name}-${t.id}`}>
+                        {t.name}
+                      </SingleSelectOption>
+                    );
+                  })}
+                </SingleSelect>
+              </Box>
+              <Box>
+                <Combobox
+                  label="Select a Chartbrew dashboard"
+                  placeholder="Select a dashboard"
+                  value={dropdownProject}
+                  onChange={_onSelectProject}
+                  loading={chartsLoading}
+                  loadingMessage="Fetching the charts..."
+                >
+                  {projects.map((p) => {
+                    return (
+                      <ComboboxOption key={p.id} value={`${p.name}-${p.id}`}>
+                        {p.name}
+                      </ComboboxOption>
+                    );
+                  })}
+                </Combobox>
+              </Box>
+            </Flex>
 
             <Box paddingTop={4}>
               <Stack horizontal spacing={1}>

@@ -16,7 +16,7 @@ export async function getUserTeam(userId) {
       return response.json();
     })
     .then((teams) => {      
-      return teams[0];
+      return teams;
     })
     .catch((err) => {
       return Promise.reject(err);
@@ -40,6 +40,29 @@ export async function getStrapiTemplate(teamId) {
     })
     .then((template) => {
       return template;
+    })
+    .catch((err) => {
+      return Promise.reject(err);
+    });
+}
+
+export async function getTeamConnections(teamId) {
+  const { host, token } = await getSettings();
+
+  return fetch(`${host}/team/${teamId}/connections`, {
+    method: 'GET',
+    headers: new Headers({
+      accept: 'application/json',
+      authorization: `Bearer ${token}`,
+    }),
+  })
+    .then((response) => {
+      if (!response.ok) throw new Error('Cannot fetch the template configuration');
+
+      return response.json();
+    })
+    .then((connections) => {
+      return connections;
     })
     .catch((err) => {
       return Promise.reject(err);

@@ -7,7 +7,6 @@
 
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
-import { NotFound } from '@strapi/helper-plugin';
 import { Layout } from '@strapi/design-system/Layout';
 
 import pluginId from '../../pluginId';
@@ -21,7 +20,6 @@ function App() {
         <Switch>
           <Route path={`/plugins/${pluginId}`} component={Dashboard} exact />
           <Route path={`/plugins/${pluginId}/create`} component={Create} exact />
-          <Route component={NotFound} />
         </Switch>
       </Layout>
     </div>

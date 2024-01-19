@@ -21,8 +21,8 @@ import { Checkbox } from '@strapi/design-system/Checkbox';
 import pluginId from '../../pluginId';
 import { getModels } from '../../actions/model';
 import { getSettings, setSettings } from '../../actions/store';
-import { generateTemplate, getProjectConnections, getProjects } from '../../actions/project';
-import { getStrapiTemplate, getUserTeam } from '../../actions/team';
+import { generateTemplate } from '../../actions/project';
+import { getStrapiTemplate, getTeamConnections, getUserTeam } from '../../actions/team';
 import { login } from '../../actions/user';
 
 function Create() {
@@ -43,7 +43,7 @@ function Create() {
   const [store, setStore] = useState({});
   const [generationError, setGenerationError] = useState(false);
   
-  useEffect(() => {
+  useEffect(async () => {
     getSettings()
       .then((data) => {
         setSettingsLoading(false);
@@ -56,24 +56,29 @@ function Create() {
       .then((data) => {
         setModels(data);
       });
-    
-    getProjects()
-      .then(async (data) => {
-        setProjects(data);
 
-        const user = await login();
-        const team = await getUserTeam(user.id);
-        const template = await getStrapiTemplate(team.id);
+      const user = await login();
+      const teamData = await getUserTeam(user.id);
+      const team = teamData[0];
 
-        const charts = template.Charts.map((c) => ({
-          tid: c.tid,
-          name: c.name,
-        }));
+      let projectsData = [];
+      if (teamData?.length > 0) {
+        teamData.forEach((t) => {
+          projectsData = projectsData.concat(t.Projects);
+        });
+      }
+      setProjects(projectsData);
 
-        setUserTeam(team);
-        setTemplateCharts(charts);
-        setSelectedCharts(charts.map((c) => c.tid));
-      });
+      const template = await getStrapiTemplate(team.id);
+
+      const charts = template.Charts.map((c) => ({
+        tid: c.tid,
+        name: c.name,
+      }));
+
+      setUserTeam(team);
+      setTemplateCharts(charts);
+      setSelectedCharts(charts.map((c) => c.tid));
   }, []);
 
   const _onSelectCollection = (model) => {
@@ -118,7 +123,7 @@ function Create() {
     };
 
     if (selectedProject && selectedProject.id) {
-      const connections = await getProjectConnections(selectedProject.id);
+      const connections = await getTeamConnections(userTeam.id);
       const strapiConnection = connections.filter((c) => {
         return c.host.indexOf(store.strapiHost) > -1;
       })[0];
