@@ -127,25 +127,16 @@ function BarChart(props) {
           ))}
         </Stack>
       )}
-      <div>
+      <div style={{ height: "100%", paddingBottom: 10 }}>
         {chart.chartData && chart.chartData.growth && chart.mode === 'kpichart' && (
           <KpiChartSegment chart={chart} editMode={editMode} />
         )}
         {chart.mode !== 'kpi' && chart.chartData && chart.chartData.data && chart.chartData.data.labels && (
-          <div>
-            <Bar
-              data={chart.chartData.data}
-              options={strapifyChartData(chart.chartData).options}
-              height={
-                height - (
-                  (chart.mode === 'kpichart' && chart.chartSize > 1 && 90)
-                  || (chart.mode === 'kpichart' && chart.chartSize === 1 && 80)
-                  || 0
-                )
-              }
-              redraw={redraw}
-            />
-          </div>
+          <Bar
+            data={chart.chartData.data}
+            options={strapifyChartData(chart.chartData).options}
+            redraw={redraw}
+          />
         )}
       </div>
     </>

@@ -62,7 +62,7 @@ const dataLabelsPlugin = {
 
 function DoughnutChart(props) {
   const {
-    chart, redraw, redrawComplete, height
+    chart, redraw, redrawComplete,
   } = props;
 
   useEffect(() => {
@@ -74,7 +74,7 @@ function DoughnutChart(props) {
   }, [redraw, redrawComplete]);
 
   return (
-    <div>
+    <div style={{ height: "95%", paddingBottom: 10 }}>
       {chart.chartData.data && chart.chartData.data.labels && (
         <Doughnut
           data={chart.chartData.data}
@@ -85,7 +85,6 @@ function DoughnutChart(props) {
               datalabels: dataLabelsPlugin,
             },
           }}
-          height={height}
           redraw={redraw}
           plugins={[ChartDataLabels]}
         />

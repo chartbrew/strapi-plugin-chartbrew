@@ -23,6 +23,7 @@ import { EmptyStateLayout } from '@strapi/design-system/EmptyStateLayout';
 import Plus from '@strapi/icons/Plus';
 import Chart from '@strapi/icons/ChartCircle';
 import ExternalLink from '@strapi/icons/ExternalLink';
+import { WidthProvider, Responsive } from "react-grid-layout";
 
 import pluginId from '../../pluginId';
 import { getSettings, setSettings } from '../../actions/store';
@@ -36,6 +37,9 @@ import RadarChart from '../../components/ChartbrewCharts/RadarChart';
 import PolarChart from '../../components/ChartbrewCharts/PolarChart';
 import DoughnutChart from '../../components/ChartbrewCharts/DoughnutChart';
 import { Illo } from '../../components/Illo';
+import KpiChart from '../../components/ChartbrewCharts/KpiChart';
+
+const ResponsiveGridLayout = WidthProvider(Responsive, { measureBeforeMount: true });
 
 function Dashboard() {
   const [store, setStore] = useState({});
@@ -49,6 +53,7 @@ function Dashboard() {
   const [team, setTeam] = useState({});
   const [teams, setTeams] = useState([]);
   const [dropdownTeam, setDropdownTeam] = useState('');
+  const [layouts, setLayouts] = useState(null);
 
   useEffect(() => {
     getSettings().then((data) => setStore(data));
@@ -86,6 +91,29 @@ function Dashboard() {
       }
     }
   }, [teams, store, dropdownTeam]);
+
+  useEffect(() => {
+    if (charts && charts.length > 0) {
+      // set the grid layout
+      const newLayouts = { xxs: [], xs: [], sm: [], md: [], lg: [] };
+      charts.forEach((chart) => {
+        if (chart.layout) {
+          Object.keys(chart.layout).forEach((key) => {
+            newLayouts[key].push({
+              i: chart.id.toString(),
+              x: chart.layout[key][0] || 0,
+              y: chart.layout[key][1] || 0,
+              w: chart.layout[key][2],
+              h: chart.layout[key][3],
+              minW: 2,
+            });
+          });
+        }
+      });
+
+      setLayouts(newLayouts);
+    }
+  }, [charts]);
 
   const _init = () => {
     login()
@@ -282,35 +310,30 @@ function Dashboard() {
             </Box>
 
             <Box paddingTop={4}>
-              <Grid
-                gap={[3, 2, 2]}
+              <ResponsiveGridLayout
+                className="layout"
+                layouts={layouts}
+                margin={{ lg: [12, 12], md: [12, 12], sm: [12, 12], xs: [12, 12], xxs: [12, 12] }}
+                breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
+                cols={{ lg: 12, md: 10, sm: 8, xs: 6, xxs: 4 }}
+                rowHeight={150}
+                isDraggable={false}
+                isResizable={false}
               >
-                {charts.filter((c) => c.type !== 'table').length === 0 && (
-                  <GridItem col={12}>
-                    <Typography variant="epsilon">
-                      <i>This dashboard does not have any charts yet.</i>
-                    </Typography>
-                  </GridItem>
-                )}
-                {charts.filter((c) => c.type !== 'table').map((chart) => (
-                  <GridItem
+                {charts.map((chart, index) => (
+                  <Box
                     key={chart.id}
+                    background="neutral0"
                     padding={4}
                     hasRadius
-                    background="neutral0"
                     shadow="tableShadow"
-                    col={(12 - (12 / chart.chartSize)) || 4}
-                    s={12}
-                    style={{ height: 320 }}
                   >
                     <Typography variant="delta">{chart.name}</Typography>
                     {chart.chartData && chart.type === 'line' && (
                       <LineChart chart={chart} />
                     )}
                     {chart.type === 'bar' && (
-                      <BarChart
-                        chart={chart}
-                      />
+                      <BarChart chart={chart} />
                     )}
                     {chart.type === 'pie' && (
                       <PieChart chart={chart} />
@@ -327,9 +350,12 @@ function Dashboard() {
                     {chart.type === 'avg' && (
                       <LineChart chart={chart} />
                     )}
-                  </GridItem>
+                    {chart.type === 'kpi' && (
+                      <KpiChart chart={chart} />
+                    )}
+                  </Box>
                 ))}
-              </Grid>
+              </ResponsiveGridLayout>
             </Box>
           </Box>
         )}

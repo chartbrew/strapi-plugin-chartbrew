@@ -21,7 +21,7 @@ ChartJS.register(
 
 function PolarChart(props) {
   const {
-    chart, redraw, redrawComplete, height
+    chart, redraw, redrawComplete,
   } = props;
 
   useEffect(() => {
@@ -33,12 +33,11 @@ function PolarChart(props) {
   }, [redraw, redrawComplete]);
 
   return (
-    <div>
+    <div style={{ height: "95%", paddingBottom: 10 }}>
       {chart.chartData.data && chart.chartData.data.labels && (
         <PolarArea
           data={chart.chartData.data}
           options={strapifyChartData(chart.chartData).options}
-          height={height}
           redraw={redraw}
         />
       )}
