@@ -17,7 +17,6 @@ import { Typography } from '@strapi/design-system/Typography';
 import { Stack } from '@strapi/design-system/Stack';
 import { Combobox, ComboboxOption } from '@strapi/design-system/Combobox';
 import { SingleSelect, SingleSelectOption } from '@strapi/design-system/Select';
-import { Grid, GridItem } from '@strapi/design-system/Grid';
 import { Alert } from '@strapi/design-system/Alert';
 import { EmptyStateLayout } from '@strapi/design-system/EmptyStateLayout';
 import Plus from '@strapi/icons/Plus';

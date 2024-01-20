@@ -17,6 +17,7 @@ import { Stack } from '@strapi/design-system/Stack';
 import { Alert } from '@strapi/design-system/Alert';
 import { Combobox, ComboboxOption } from '@strapi/design-system/Combobox';
 import { Checkbox } from '@strapi/design-system/Checkbox';
+import { SingleSelect, SingleSelectOption } from '@strapi/design-system/Select';
 
 import pluginId from '../../pluginId';
 import { getModels } from '../../actions/model';
@@ -42,6 +43,8 @@ function Create() {
   const [planLimits, setPlanLimits] = useState(false);
   const [store, setStore] = useState({});
   const [generationError, setGenerationError] = useState(false);
+  const [teams, setTeams] = useState([]);
+  const [dropdownTeam, setDropdownTeam] = useState('');
   
   useEffect(async () => {
     getSettings()
@@ -59,24 +62,14 @@ function Create() {
 
       const user = await login();
       const teamData = await getUserTeam(user.id);
-      const team = teamData[0];
-
-      let projectsData = [];
-      if (teamData?.length > 0) {
-        teamData.forEach((t) => {
-          projectsData = projectsData.concat(t.Projects);
-        });
-      }
-      setProjects(projectsData);
-
-      const template = await getStrapiTemplate(team.id);
-
+      setTeams(teamData);
+      
+      const template = await getStrapiTemplate(teamData[0].id);
       const charts = template.Charts.map((c) => ({
         tid: c.tid,
         name: c.name,
       }));
 
-      setUserTeam(team);
       setTemplateCharts(charts);
       setSelectedCharts(charts.map((c) => c.tid));
   }, []);
@@ -107,6 +100,7 @@ function Create() {
   };
 
   const _onSelectProject = (projectValue) => {
+    if (!projectValue) return;
     const project = projects.filter((p) => `${p.name}-${p.id}` === projectValue)[0];
     setDropdownProject(`${project.name}-${project.id}`);
     setSelectedProject(project);
@@ -125,7 +119,7 @@ function Create() {
     if (selectedProject && selectedProject.id) {
       const connections = await getTeamConnections(userTeam.id);
       const strapiConnection = connections.filter((c) => {
-        return c.host.indexOf(store.strapiHost) > -1;
+        return c.host && c.host.indexOf(store.strapiHost) > -1;
       })[0];
 
       if (strapiConnection && strapiConnection.id) {
@@ -164,6 +158,15 @@ function Create() {
 
     return false;
   }
+
+  const _onSelectTeam = (teamValue) => {
+    if (!teamValue) return;
+    const team = teams.find((t) => `${t.name}-${t.id}` === teamValue);
+    setDropdownTeam(`${team.name}-${team.id}`);
+    setUserTeam(team);
+
+    setProjects(team.Projects);
+  };
 
   return (
     <div>
@@ -217,24 +220,45 @@ function Create() {
               </Alert>
             </Box>
           )}
+          <Box>
+            <Typography variant="delta">{'Select your Chartbrew team'}</Typography>
+          </Box>
           <Box paddingTop={2}>
-            <Typography variant="beta">{'Select one of your collection types below '}</Typography>
+            <SingleSelect
+              value={dropdownTeam}
+              onChange={_onSelectTeam}
+            >
+              {teams.map((t) => {
+                return (
+                  <SingleSelectOption key={t.id} value={`${t.name}-${t.id}`}>
+                    {t.name}
+                  </SingleSelectOption>
+                );
+              })}
+            </SingleSelect>
           </Box>
-          <Box paddingTop={4}>
-            <Grid gap={[3, 2, 2]}>
-              {models.map((model) => (
-                <GridItem key={model.uid} col={2} s={4} xs={6}>
-                  <Button
-                    variant={model.uid === collection.uid ? 'default' : 'secondary'}
-                    onClick={() => _onSelectCollection(model)}
-                    fullWidth
-                  >
-                    {model.displayName}
-                  </Button>
-                </GridItem>
-              ))}
-            </Grid>
-          </Box>
+          {dropdownTeam && (
+            <>
+              <Box paddingTop={4}>
+                <Typography variant="delta">{'Select one of your collection types below '}</Typography>
+              </Box>
+              <Box paddingTop={4}>
+                <Grid gap={[3, 2, 2]}>
+                  {models.map((model) => (
+                    <GridItem key={model.uid} col={2} s={4} xs={6}>
+                      <Button
+                        variant={model.uid === collection.uid ? 'default' : 'secondary'}
+                        onClick={() => _onSelectCollection(model)}
+                        fullWidth
+                      >
+                        {model.displayName}
+                      </Button>
+                    </GridItem>
+                  ))}
+                </Grid>
+              </Box>
+            </>
+          )}
 
           {collection.uid && (
             <Box>
@@ -314,10 +338,10 @@ function Create() {
                   value={dropdownProject}
                   onChange={_onSelectProject}
                 >
-                  {projects.map((project) => {
+                  {projects.filter((p) => p).map((p) => {
                     return (
-                      <ComboboxOption key={project.id} value={`${project.name}-${project.id}`}>
-                        {project.name}
+                      <ComboboxOption key={p.id} value={`${p.name}-${p.id}`}>
+                        {p.name}
                       </ComboboxOption>
                     );
                   })}
@@ -329,7 +353,7 @@ function Create() {
                   onClick={() => _onGenerateCharts()}
                   size="L"
                   loading={generating}
-                  disabled={selectedCharts.length < 1}
+                  disabled={selectedCharts.length < 1 || !dropdownTeam}
                   variant={planLimits ? "danger" : "default"}
                 >
                   Create the charts
