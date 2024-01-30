@@ -199,7 +199,7 @@ function Dashboard() {
               </SingleSelect>
 
               <Combobox
-                label="Select a Chartbrew dashboardd"
+                label="Select a Chartbrew dashboard"
                 value={dropdownProject}
                 onChange={_onSelectProject}
               >
