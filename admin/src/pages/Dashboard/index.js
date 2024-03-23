@@ -52,7 +52,7 @@ function Dashboard() {
   const [team, setTeam] = useState({});
   const [teams, setTeams] = useState([]);
   const [dropdownTeam, setDropdownTeam] = useState('');
-  const [layouts, setLayouts] = useState(null);
+  const [layouts, setLayouts] = useState({ xxs: [], xs: [], sm: [], md: [], lg: [] });
 
   useEffect(() => {
     getSettings().then((data) => setStore(data));
