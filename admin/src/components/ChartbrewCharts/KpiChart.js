@@ -40,9 +40,9 @@ function KpiChart(props) {
         marginTop: chart.chartSize === 1 ? 10 : 0,
         textAlign: 'center',
       }}>
-        {status === 'positive' && <Icon as={ArrowUp} height="0.7rem" color="success500" />}
-        {status === 'negative' && <Icon as={ArrowDown} height="0.7rem" color="danger500" />}
-        <Typography variant="omega" style={{ color: Colors[status] }}>
+        {status === 'positive' && <Icon as={ArrowUp} height="0.6rem" color="success500" />}
+        {status === 'negative' && <Icon as={ArrowDown} height="0.6rem" color="danger500" />}
+        <Typography variant="pi" style={{ color: Colors[status] }}>
           {`${comparison}% `}
         </Typography>
         <Typography variant="pi" style={{ color: Colors.neutral, display: 'inline-block' }}>
@@ -66,27 +66,25 @@ function KpiChart(props) {
     >
       {chart?.chartData?.data?.datasets.map((dataset, index) => (
         <Box key={dataset.id} padding={4} style={{ textAlign: 'center' }}>
+          {chart.ChartDatasetConfigs[index] && (
+            <Box paddingTop={chart.showGrowth ? -5 : 0} style={{ textAlign: 'center' }}>
+              <Typography
+                variant="epsilon"
+              >
+                {dataset.label}
+              </Typography>
+            </Box>
+          )}
+
           <Typography
             variant="alpha"
             key={uuid()}
           >
             {dataset.data && _getKpi(dataset.data)}
           </Typography>
-          {chart.ChartDatasetConfigs[index] && (
-            <Box paddingTop={chart.showGrowth ? -5 : 0} style={{ textAlign: 'center' }}>
-              {chart.showGrowth && chart.chartData.growth && (
-                _renderGrowth(chart.chartData.growth[index])
-              )}
-              <Typography
-                variant="epsilon"
-                style={
-                  chart.ChartDatasetConfigs
-                  && styles.datasetLabelColor(chart.ChartDatasetConfigs[index].datasetColor)
-                }
-              >
-                {dataset.label}
-              </Typography>
-            </Box>
+
+          {chart.showGrowth && chart.chartData.growth && (
+            _renderGrowth(chart.chartData.growth[index])
           )}
         </Box>
       ))}
