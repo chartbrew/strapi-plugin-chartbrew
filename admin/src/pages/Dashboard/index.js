@@ -75,10 +75,10 @@ function Dashboard() {
     if (store.defaultTeam && teams.length > 0 && !dropdownTeam) {
       // set the value for the dropdown
       const selectedTeam = teams.find((t) => t.id === store.defaultTeam);
-      setProjects(selectedTeam.Projects);
 
       if (selectedTeam) {
         setDropdownTeam(`${selectedTeam.name}-${selectedTeam.id}`);
+        setProjects(selectedTeam.Projects);
 
         if (store.defaultProject) {
           const selectedProject = selectedTeam.Projects.find((p) => p.id === store.defaultProject);
