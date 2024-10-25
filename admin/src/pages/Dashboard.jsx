@@ -7,8 +7,11 @@
 
 import React, { memo, useEffect, useState } from 'react';
 // import PropTypes from 'prop-types';
-import { Box, Flex, Button, Tabs, LinkButton, Link, Loader, Typography, Stack, Combobox, ComboboxOption, SingleSelect, SingleSelectOption, Alert, EmptyStateLayout } from '@strapi/design-system';
-import { Plus, Chart, ExternalLink } from '@strapi/icons';
+import {
+  Box, Flex, Button, Tabs, LinkButton, Link, Loader, Typography,
+  Combobox, ComboboxOption, SingleSelect, SingleSelectOption, Alert, EmptyStateLayout,
+} from '@strapi/design-system';
+import { Plus, ChartCircle, ExternalLink } from '@strapi/icons';
 import { WidthProvider, Responsive } from "react-grid-layout";
 
 import { PLUGIN_ID } from '../pluginId';
@@ -164,12 +167,12 @@ function Dashboard() {
 
         {!pageLoading && !store.defaultTeam && user.id && teams && (
           <Box padding={4} shadow="filterShadow" background="neutral0">
-            <Stack spacing={1}>
+            <Flex gap={1}>
               <Typography variant="beta">{'Let\'s set up your first dashboard '}</Typography>
               <Typography variant="epsilon">
                 {'Select a Chartbrew dashboard to load it in Strapi '}
               </Typography>
-            </Stack>
+            </Flex>
             <Flex paddingTop={4}>
               <SingleSelect
                 label="Select a Chartbrew team"
@@ -271,7 +274,7 @@ function Dashboard() {
             </Flex>
 
             <Box paddingTop={4}>
-              <Stack horizontal spacing={1}>
+              <Flex gap={1}>
                 {team && (
                   <LinkButton
                     href={`${store.clientHost}/${team.id}/${store.defaultProject}/dashboard`}
@@ -292,7 +295,7 @@ function Dashboard() {
                 >
                   How to use Chartbrew with Strapi
                 </LinkButton>
-              </Stack>
+              </Flex>
             </Box>
 
             <Box paddingTop={4}>

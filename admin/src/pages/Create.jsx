@@ -5,19 +5,11 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { ContentLayout, BaseHeaderLayout } from '@strapi/design-system/Layout';
-import { Box } from '@strapi/design-system/Box';
-import { Link } from '@strapi/design-system/Link';
-import { Typography } from '@strapi/design-system/Typography';
-import ArrowLeft from '@strapi/icons/ArrowLeft';
-import { Button } from '@strapi/design-system/Button';
-import { Grid, GridItem } from '@strapi/design-system/Grid';
-import { Divider } from '@strapi/design-system/Divider';
-import { Stack } from '@strapi/design-system/Stack';
-import { Alert } from '@strapi/design-system/Alert';
-import { Combobox, ComboboxOption } from '@strapi/design-system/Combobox';
-import { Checkbox } from '@strapi/design-system/Checkbox';
-import { SingleSelect, SingleSelectOption } from '@strapi/design-system/Select';
+import {
+  Typography, Button, Grid, Divider, Alert, SingleSelect,
+  SingleSelectOption, Combobox, ComboboxOption, Checkbox, Box, Link,
+} from '@strapi/design-system';
+import { ArrowLeft } from '@strapi/icons';
 
 import { PLUGIN_ID } from '../pluginId';
 import { getModels } from '../actions/model';
@@ -170,16 +162,21 @@ function Create() {
 
   return (
     <div>
-      <BaseHeaderLayout
-        title="Create"
-        subtitle="Add new visualizations to your Chartbrew dashboards"
-        navigationAction={(
-          <Link startIcon={<ArrowLeft />} to={`/plugins/${PLUGIN_ID}`}>
+      <Flex gap={{ intial: 1, medium: 4, large: 8 }} paddingLeft={10} paddingRight={10} paddingTop={8} paddingBottom={8} alignItems="left" justifyContent="space-between" direction="row">
+        <div>
+          <Typography variant="alpha">Create</Typography>
+          <Typography variant="omega">Add new visualizations to your Chartbrew dashboards</Typography>
+        </div>
+        <div>
+          <LinkButton
+            startIcon={<ArrowLeft />}
+            to={`/plugins/${PLUGIN_ID}`}
+          >
             Back to the dashboard
-          </Link>
-        )}
-      />
-      <ContentLayout>
+          </LinkButton>
+        </div>
+      </Flex>
+      <Flex gap={{ intial: 1, medium: 4, large: 8 }} direction="column" justifyContent="center">
         <Box padding={6} shadow="filterShadow" background="neutral0">
           {!settingsLoading && store.strapiHost && _isLocalConnectingToManaged() && (
             <Box paddingBottom={4}>
@@ -245,7 +242,7 @@ function Create() {
               <Box paddingTop={4}>
                 <Grid gap={[3, 2, 2]}>
                   {models.map((model) => (
-                    <GridItem key={model.uid} col={2} s={4} xs={6}>
+                    <Grid.Item key={model.uid} col={2} s={4} xs={6}>
                       <Button
                         variant={model.uid === collection.uid ? 'default' : 'secondary'}
                         onClick={() => _onSelectCollection(model)}
@@ -253,7 +250,7 @@ function Create() {
                       >
                         {model.displayName}
                       </Button>
-                    </GridItem>
+                    </Grid.Item>
                   ))}
                 </Grid>
               </Box>
@@ -270,7 +267,7 @@ function Create() {
                 <Typography variant="delta">{'Timestamp settings '}</Typography>
               </Box>
               <Box paddingTop={2}>
-                <Stack spacing={2} horizontal>
+                <Flex gap={2}>
                   <Combobox
                     label="Select your 'created at' field"
                     value={createdAt}
@@ -297,7 +294,7 @@ function Create() {
                       );
                     })}
                   </Combobox>
-                </Stack>
+                </Flex>
               </Box>
 
               <Box paddingTop={6}>
@@ -309,14 +306,14 @@ function Create() {
               <Box paddingTop={4}>
                 <Grid gap={[4, 4, 4]}>
                   {templateCharts.map((chart) => (
-                    <GridItem col={3} s={4} xs={6} key={chart.tid}>
+                    <Grid.Item col={3} s={4} xs={6} key={chart.tid}>
                       <Checkbox
                         checked={selectedCharts.indexOf(chart.tid) > -1}
                         onClick={() => _onToggleChart(chart)}
                       >
                         {chart.name && chart.name.replace('undefined', collection.pluralName)}
                       </Checkbox>
-                    </GridItem>
+                    </Grid.Item>
                   ))}
                 </Grid>
               </Box>
@@ -390,7 +387,7 @@ function Create() {
             </Box>
           )}
         </Box>
-      </ContentLayout>
+      </Flex>
     </div>
   );
 }

@@ -17,12 +17,8 @@ import {
   Legend,
   Filler,
 } from 'chart.js';
-import { Typography } from '@strapi/design-system/Typography';
-import ArrowUp from '@strapi/icons/ArrowUp';
-import ArrowDown from '@strapi/icons/ArrowDown';
-import { Icon } from '@strapi/design-system/Icon';
-import { Box } from '@strapi/design-system/Box';
-import { Stack } from '@strapi/design-system/Stack';
+import { ArrowUp, ArrowDown } from '@strapi/icons';
+import { Box, Typography, Flex } from '@strapi/design-system';
 
 import determineType from '../../utils/determineType';
 import KpiChartSegment from './KpiChartSegment';
@@ -74,8 +70,8 @@ function BarChart(props) {
         marginTop: chart.chartSize === 1 ? 10 : 0,
         textAlign: 'center',
       }}>
-        {status === 'positive' && <Icon as={ArrowUp} height="0.7rem" color="success500" />}
-        {status === 'negative' && <Icon as={ArrowDown} height="0.7rem" color="danger500" />}
+        {status === 'positive' && <ArrowUp height="0.7rem" color="success500" />}
+        {status === 'negative' && <ArrowDown height="0.7rem" color="danger500" />}
         <Typography variant="omega" style={{ color: Colors[status] }}>
           {`${comparison}% `}
         </Typography>
@@ -92,7 +88,7 @@ function BarChart(props) {
         && chart.chartData
         && chart.chartData.data
         && chart.chartData.data.datasets && (
-        <Stack horizontal={chart.chartSize !== 1}>
+        <Flex gap={2}>
           {chart.chartData.data.datasets.map((dataset, index) => (
             <Box key={dataset.id} padding={4} style={{ textAlign: 'center' }}>
               <Typography
@@ -125,7 +121,7 @@ function BarChart(props) {
               )}
             </Box>
           ))}
-        </Stack>
+        </Flex>
       )}
       <div style={{ height: "100%", paddingBottom: 10 }}>
         {chart.chartData && chart.chartData.growth && chart.mode === 'kpichart' && (

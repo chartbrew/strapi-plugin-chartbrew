@@ -114,20 +114,6 @@ const Setup = () => {
 
   return (
     <div>
-      {/* <HeaderLayout
-        title="Chartbrew Setup"
-        subtitle="Connect to Chartbrew to start visualizing your Strapi data"
-        primaryAction={(
-          <LinkButton
-            endIcon={<ExternalLink />}
-            href="https://chartbrew.com?utm_source=strapi_plugin"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn more about Chartbrew
-          </LinkButton>
-        )}
-      /> */}
       <Flex gap={{ intial: 1, medium: 4, large: 8 }} paddingLeft={10} paddingRight={10} paddingTop={8} paddingBottom={8} alignItems="left" justifyContent="space-between" direction="row">
         <Typography variant="alpha">Chartbrew Setup</Typography>
         <div>

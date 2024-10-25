@@ -1,12 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Typography } from '@strapi/design-system/Typography';
-import ArrowUp from '@strapi/icons/ArrowUp';
-import ArrowDown from '@strapi/icons/ArrowDown';
-import { Icon } from '@strapi/design-system/Icon';
-import { Box } from '@strapi/design-system/Box';
-import { Stack } from '@strapi/design-system/Stack';
-import { Tooltip } from '@strapi/design-system/Tooltip';
+import { ArrowUp, ArrowDown } from '@strapi/icons';
+import { Box, Flex, Typography, Tooltip } from '@strapi/design-system';
 
 import { Colors } from '../../utils/colors';
 
@@ -14,7 +9,7 @@ function KpiChartSegment(props) {
   const { chart, editMode } = props;
 
   return (
-    <Stack horizontal style={styles.growthContainer} spacing={2}>
+    <Flex gap={2} style={styles.growthContainer}>
       {chart.chartData.growth.map((c, index) => {
         if (chart.chartSize === 1 && index > 1) return (<span key={c.label} />);
 
@@ -34,15 +29,15 @@ function KpiChartSegment(props) {
             <Box>
               <Typography variant="beta">{`${c.value} `}</Typography>
               {chart.showGrowth && (
-                <Stack style={{ display: 'inline-block' }} horizontal>
-                  {c.status === 'positive' && <Icon as={ArrowUp} height="0.7rem" color="success500" />}
-                  {c.status === 'negative' && <Icon as={ArrowDown} height="0.7rem" color="danger500" />}
+                <Flex style={{ display: 'inline-block' }}>
+                  {c.status === 'positive' && <ArrowUp height="0.7rem" color="success500" />}
+                  {c.status === 'negative' && <ArrowDown height="0.7rem" color="danger500" />}
                   <Tooltip description={`In the last ${chart.timeInterval}`} delay={100}>
                     <Typography variant="omega" style={{ color: Colors[c.status] }}>
                       {`${c.comparison}%`}
                     </Typography>
                   </Tooltip>
-                </Stack>
+                </Flex>
               )}
             </Box>
             <Box style={chart.chartSize === 1 ? { fontSize: '0.8em' } : {}}>
@@ -59,7 +54,7 @@ function KpiChartSegment(props) {
           </Box>
         );
       })}
-    </Stack>
+    </Flex>
   );
 }
 
