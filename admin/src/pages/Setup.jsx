@@ -6,6 +6,11 @@
 
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, Field, Flex, Button, LinkButton, Link, Alert, Tabs } from '@strapi/design-system';
+import {
+  Layouts,
+  Page,
+  useNotification,
+} from '@strapi/strapi/admin';
 import { Magic, Check, Cross, ChevronRight, ExternalLink } from '@strapi/icons';
 
 import { PLUGIN_ID } from '../pluginId';
@@ -29,6 +34,8 @@ const Setup = () => {
   const [savingToken, setSavingToken] = useState(false);
   const [hasToken, setHasToken] = useState(false);
   const [localAlert, setLocalAlert] = useState(false);
+
+  const { toggleNotification } = useNotification();
 
   useEffect(() => {
     // get plugin settings
@@ -98,8 +105,18 @@ const Setup = () => {
         setSavingToken(false);
         setHasToken(data.hasToken);
         setStrapiToken('');
+        toggleNotification({
+          message: 'Strapi token saved',
+          type: 'success',
+        });
       })
-      .catch(() => setSavingToken(false));
+      .catch(() => {
+        setSavingToken(false);
+        toggleNotification({
+          message: 'Failed to save Strapi token',
+          type: 'danger',
+        });
+      });
   };
 
   const _onRemoveStrapiToken = () => {
@@ -114,22 +131,23 @@ const Setup = () => {
 
   return (
     <div>
-      <Flex gap={{ intial: 1, medium: 4, large: 8 }} paddingLeft={10} paddingRight={10} paddingTop={8} paddingBottom={8} alignItems="left" justifyContent="space-between" direction="row">
-        <Typography variant="alpha">Chartbrew Setup</Typography>
-        <div>
+      <Layouts.Header
+        title="Chartbrew Setup"
+        subtitle="Connect to Chartbrew to start visualizing your Strapi data"
+        primaryAction={(
           <LinkButton
-            endIcon={<ExternalLink />}
+            endIcon={<ExternalLink color="white" />}
             href="https://chartbrew.com?utm_source=strapi_plugin"
             target="_blank"
             rel="noopener noreferrer"
           >
             Learn more about Chartbrew
           </LinkButton>
-        </div>
-      </Flex>
+        )}
+      />
 
-      <Flex gap={{ intial: 1, medium: 4, large: 8 }} direction="column" justifyContent="center">
-        <Box padding={6} paddingLeft={8} paddingRight={8} shadow="filterShadow" background="neutral0">
+      <Layouts.Content>
+        <Box padding={6} paddingLeft={8} paddingRight={8} shadow="filterShadow" background="neutral0" marginBottom={6}>
           <Typography variant="beta">Get started with Chartbrew</Typography>
           <div>
             <Typography variant="omega">
@@ -190,7 +208,7 @@ const Setup = () => {
           </Box>
         </Box>
 
-        <Box padding={6} paddingLeft={8} paddingRight={8} shadow="filterShadow" background="neutral0">
+        <Box padding={6} paddingLeft={8} paddingRight={8} shadow="filterShadow" background="neutral0" marginBottom={6}>
           <Box paddingTop={2}>
             <Typography variant="beta">Connect to Chartbrew</Typography>
           </Box>
@@ -264,7 +282,7 @@ const Setup = () => {
           </Box>
 
           <Box paddingTop={4}>
-            <Flex spacing={2} direction="row">
+            <Flex gap={2} direction="row">
               <Button
                 variant={(saved && 'success-light') || (error && 'danger-light') || 'default'}
                 disabled={_onValidateData()}
@@ -278,7 +296,7 @@ const Setup = () => {
                 <LinkButton
                   variant="secondary"
                   endIcon={<ChevronRight />}
-                  to={`/plugins/${PLUGIN_ID}`}
+                  href={`/plugins/${PLUGIN_ID}`}
                 >
                   Continue to your dashboard
                 </LinkButton>
@@ -396,7 +414,7 @@ const Setup = () => {
             </Box>
           </Box>
         )}
-      </Flex>
+      </Layouts.Content>
     </div>
   );
 }

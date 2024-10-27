@@ -1,6 +1,5 @@
 import React from 'react'
-import { ArrowUp, ArrowDown } from '@strapi/icons';
-import { Box, Typography } from '@strapi/design-system';
+import { Box, Typography, Badge } from '@strapi/design-system';
 import { nanoid } from 'nanoid';
 
 import determineType from '../../utils/determineType';
@@ -37,14 +36,9 @@ function KpiChart(props) {
         marginTop: chart.chartSize === 1 ? 10 : 0,
         textAlign: 'center',
       }}>
-        {status === 'positive' && <ArrowUp height="0.6rem" color="success500" />}
-        {status === 'negative' && <ArrowDown height="0.6rem" color="danger500" />}
-        <Typography variant="pi" style={{ color: Colors[status] }}>
-          {`${comparison}% `}
-        </Typography>
-        <Typography variant="pi" style={{ color: Colors.neutral, display: 'inline-block' }}>
-          {` last ${chart.timeInterval}`}
-        </Typography>
+        <Badge backgroundColor={c.status === 'positive' ? 'success100' : 'danger100'} textColor={c.status === 'positive' ? 'success600' : 'danger600'} size="S">
+          {`${c.comparison}%`}
+        </Badge>
       </div>
     );
   };

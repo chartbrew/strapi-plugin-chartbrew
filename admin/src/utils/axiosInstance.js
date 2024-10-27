@@ -4,7 +4,10 @@
 
 import axios from 'axios';
 
-const token = localStorage.getItem('jwtToken');
+let token = localStorage.getItem('jwtToken');
+if (token) {
+  token = token.replaceAll('"', '');
+}
 
 const instance = axios.create({
   baseURL: process.env.STRAPI_ADMIN_BACKEND_URL,

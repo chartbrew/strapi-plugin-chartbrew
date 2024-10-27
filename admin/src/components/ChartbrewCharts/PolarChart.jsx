@@ -13,6 +13,8 @@ import {
   Legend,
   Filler,
 } from 'chart.js';
+import { useTheme } from 'styled-components';
+
 import strapifyChartData from '../../utils/strapifyChartData';
 
 ChartJS.register(
@@ -24,6 +26,8 @@ function PolarChart(props) {
     chart, redraw, redrawComplete,
   } = props;
 
+  const { colors } = useTheme();
+
   useEffect(() => {
     if (redraw) {
       setTimeout(() => {
@@ -32,14 +36,47 @@ function PolarChart(props) {
     }
   }, [redraw, redrawComplete]);
 
+  const _getChartOptions = () => {
+    // add any dynamic changes to the chartJS options here
+    const chartOptions = chart?.chartData?.options;
+    if (chartOptions) {
+      const newOptions = JSON.parse(JSON.stringify(chartOptions));
+
+      if (newOptions.scales) {
+        newOptions.scales = {
+          r: {
+            grid: {
+              color: colors.neutral400,
+            },
+            angleLines: {
+              color: colors.neutral400,
+            },
+            pointLabels: {
+              color: colors.neutral800,
+            },
+          }
+        };
+      }
+      if (newOptions.plugins?.legend?.labels) {
+        newOptions.plugins.legend.labels.color = colors.neutral800;
+      }
+
+      return newOptions;
+    }
+
+    return chart.chartData?.options;
+  };
+
   return (
-    <div style={{ height: "95%", paddingBottom: 10 }}>
+    <div style={{ height: "100%", width: '100%', display: 'flex', flexDirection: 'column' }}>
       {chart.chartData.data && chart.chartData.data.labels && (
-        <PolarArea
-          data={chart.chartData.data}
-          options={strapifyChartData(chart.chartData).options}
-          redraw={redraw}
-        />
+        <div style={{ flex: 1, minHeight: 0 }}>
+          <PolarArea
+            data={chart.chartData.data}
+            options={_getChartOptions()}
+            redraw={redraw}
+          />
+        </div>
       )}
     </div>
   );
@@ -48,14 +85,12 @@ function PolarChart(props) {
 PolarChart.defaultProps = {
   redraw: false,
   redrawComplete: () => { },
-  height: 300,
 };
 
 PolarChart.propTypes = {
   chart: PropTypes.object.isRequired,
   redraw: PropTypes.bool,
   redrawComplete: PropTypes.func,
-  height: PropTypes.number,
 };
 
 export default PolarChart;

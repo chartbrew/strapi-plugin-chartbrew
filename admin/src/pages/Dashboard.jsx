@@ -5,14 +5,15 @@
  *
  */
 
-import React, { memo, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 // import PropTypes from 'prop-types';
 import {
-  Box, Flex, Button, Tabs, LinkButton, Link, Loader, Typography,
+  Box, Flex, LinkButton, Link, Loader, Typography,
   Combobox, ComboboxOption, SingleSelect, SingleSelectOption, Alert, EmptyStateLayout,
 } from '@strapi/design-system';
 import { Plus, ChartCircle, ExternalLink } from '@strapi/icons';
 import { WidthProvider, Responsive } from "react-grid-layout";
+import { Layouts } from '@strapi/strapi/admin';
 
 import { PLUGIN_ID } from '../pluginId';
 import { getSettings, setSettings } from '../actions/store';
@@ -27,6 +28,7 @@ import PolarChart from '../components/ChartbrewCharts/PolarChart';
 import DoughnutChart from '../components/ChartbrewCharts/DoughnutChart';
 import Illo from '../components/Illo';
 import KpiChart from '../components/ChartbrewCharts/KpiChart';
+import { widthSize } from '../utils/layoutBreakpoints';
 
 const ResponsiveGridLayout = WidthProvider(Responsive, { measureBeforeMount: true });
 
@@ -151,16 +153,16 @@ function Dashboard() {
 
   return (
     <div>
-      <HeaderLayout
+      <Layouts.Header
         title="Dashboard"
         subtitle="Visualize your Strapi data"
         primaryAction={(
-          <LinkButton startIcon={<Chart />} to={`/plugins/${PLUGIN_ID}/create`} disabled={!user.id}>
+          <LinkButton startIcon={<ChartCircle />} to={`/create`} disabled={!user.id}>
             Create new visualizations
           </LinkButton>
         )}
       />
-      <ContentLayout>
+      <Layouts.Content>
         {pageLoading && (
           <Loader>Loading your dashboard...</Loader>
         )}
@@ -173,7 +175,7 @@ function Dashboard() {
                 {'Select a Chartbrew dashboard to load it in Strapi '}
               </Typography>
             </Flex>
-            <Flex paddingTop={4}>
+            <Flex paddingTop={4} gap={2}>
               <SingleSelect
                 label="Select a Chartbrew team"
                 value={dropdownTeam}
@@ -303,7 +305,7 @@ function Dashboard() {
                 className="layout"
                 layouts={layouts}
                 margin={{ lg: [12, 12], md: [12, 12], sm: [12, 12], xs: [12, 12], xxs: [12, 12] }}
-                breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
+                breakpoints={widthSize}
                 cols={{ lg: 12, md: 10, sm: 8, xs: 6, xxs: 4 }}
                 rowHeight={150}
                 isDraggable={false}
@@ -316,41 +318,52 @@ function Dashboard() {
                     padding={4}
                     hasRadius
                     shadow="tableShadow"
+                    gap={2}
+                    style={{
+                      height: '100%',
+                      overflow: 'hidden',
+                      display: 'flex',
+                      flexDirection: 'column',
+                    }}
                   >
-                    <Typography variant="delta">{chart.name}</Typography>
+                    <Flex paddingBottom={2}>
+                      <Typography variant="delta">{chart.name}</Typography>
+                    </Flex>
+                    <div style={{ flex: 1, minHeight: 0 }}>
                     {chart.chartData && chart.type === 'line' && (
                       <LineChart chart={chart} />
-                    )}
-                    {chart.type === 'bar' && (
-                      <BarChart chart={chart} />
-                    )}
-                    {chart.type === 'pie' && (
-                      <PieChart chart={chart} />
-                    )}
-                    {chart.type === 'radar' && (
-                      <RadarChart chart={chart} />
-                    )}
-                    {chart.type === 'doughnut' && (
-                      <DoughnutChart chart={chart} />
-                    )}
-                    {chart.type === 'polar' && (
-                      <PolarChart chart={chart} />
-                    )}
-                    {chart.type === 'avg' && (
-                      <LineChart chart={chart} />
-                    )}
-                    {chart.type === 'kpi' && (
-                      <KpiChart chart={chart} />
-                    )}
+                      )}
+                      {chart.type === 'bar' && (
+                        <BarChart chart={chart} />
+                      )}
+                      {chart.type === 'pie' && (
+                        <PieChart chart={chart} />
+                      )}
+                      {chart.type === 'radar' && (
+                        <RadarChart chart={chart} />
+                      )}
+                      {chart.type === 'doughnut' && (
+                        <DoughnutChart chart={chart} />
+                      )}
+                      {chart.type === 'polar' && (
+                        <PolarChart chart={chart} />
+                      )}
+                      {chart.type === 'avg' && (
+                        <LineChart chart={chart} />
+                      )}
+                      {chart.type === 'kpi' && (
+                        <KpiChart chart={chart} />
+                      )}
+                    </div>
                   </Box>
                 ))}
               </ResponsiveGridLayout>
             </Box>
           </Box>
         )}
-      </ContentLayout>
+      </Layouts.Content>
     </div>
   );
 }
 
-export default memo(Dashboard);
+export { Dashboard };

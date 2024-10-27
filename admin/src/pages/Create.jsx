@@ -10,6 +10,7 @@ import {
   SingleSelectOption, Combobox, ComboboxOption, Checkbox, Box, Link,
 } from '@strapi/design-system';
 import { ArrowLeft } from '@strapi/icons';
+import { Layouts } from '@strapi/strapi/admin';
 
 import { PLUGIN_ID } from '../pluginId';
 import { getModels } from '../actions/model';
@@ -162,21 +163,16 @@ function Create() {
 
   return (
     <div>
-      <Flex gap={{ intial: 1, medium: 4, large: 8 }} paddingLeft={10} paddingRight={10} paddingTop={8} paddingBottom={8} alignItems="left" justifyContent="space-between" direction="row">
-        <div>
-          <Typography variant="alpha">Create</Typography>
-          <Typography variant="omega">Add new visualizations to your Chartbrew dashboards</Typography>
-        </div>
-        <div>
-          <LinkButton
-            startIcon={<ArrowLeft />}
-            to={`/plugins/${PLUGIN_ID}`}
-          >
+      <Layouts.Header
+        title="Create"
+        subtitle="Add new visualizations to your Chartbrew dashboards"
+        navigationAction={(
+          <Link startIcon={<ArrowLeft />} to={`/plugins/${PLUGIN_ID}`}>
             Back to the dashboard
-          </LinkButton>
-        </div>
-      </Flex>
-      <Flex gap={{ intial: 1, medium: 4, large: 8 }} direction="column" justifyContent="center">
+          </Link>
+        )}
+      />
+      <Layouts.Content>
         <Box padding={6} shadow="filterShadow" background="neutral0">
           {!settingsLoading && store.strapiHost && _isLocalConnectingToManaged() && (
             <Box paddingBottom={4}>
@@ -387,9 +383,9 @@ function Create() {
             </Box>
           )}
         </Box>
-      </Flex>
+      </Layouts.Content>
     </div>
   );
 }
 
-export default Create;
+export { Create };

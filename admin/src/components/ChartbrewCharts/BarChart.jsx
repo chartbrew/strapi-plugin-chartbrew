@@ -2,10 +2,9 @@
 /* eslint-disable react/function-component-definition */
 /* eslint-disable no-nested-ternary */
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { Bar } from 'react-chartjs-2';
-import { nanoid } from 'nanoid';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -17,13 +16,14 @@ import {
   Legend,
   Filler,
 } from 'chart.js';
-import { ArrowUp, ArrowDown } from '@strapi/icons';
-import { Box, Typography, Flex } from '@strapi/design-system';
+import ChartDataLabels from "chartjs-plugin-datalabels";
+import { useTheme } from 'styled-components';
 
 import determineType from '../../utils/determineType';
 import KpiChartSegment from './KpiChartSegment';
 import { Colors } from '../../utils/colors';
 import strapifyChartData from '../../utils/strapifyChartData';
+import { getHeightBreakpoint, getWidthBreakpoint } from '../../utils/layoutBreakpoints';
 
 ChartJS.register(
   CategoryScale, LinearScale, PointElement, BarElement, Title, Tooltip, Legend, Filler
@@ -31,8 +31,11 @@ ChartJS.register(
 
 function BarChart(props) {
   const {
-    chart, redraw, redrawComplete, height, editMode,
+    chart, redraw, redrawComplete, editMode,
   } = props;
+
+  const { colors } = useTheme();
+  const chartRef = useRef(null);
 
   useEffect(() => {
     if (redraw) {
@@ -42,127 +45,130 @@ function BarChart(props) {
     }
   }, [redraw, redrawComplete]);
 
-  const _getKpi = (data) => {
-    if (data && Array.isArray(data)) {
-      for (let i = data.length - 1; i >= 0; i--) {
-        if (data[i]
-          && determineType(data[i]) === 'string'
-          && determineType(data[i]) === 'number'
-          && determineType(data[i]) === 'boolean'
-        ) {
-          return data[i];
+  const _getChartOptions = () => {
+    const chartOptions = strapifyChartData(chart.chartData).options;
+    // add any dynamic changes to the chartJS options here
+    if (chartOptions) {
+      const newOptions = JSON.parse(JSON.stringify(chartOptions));
+      if (newOptions.scales?.y?.grid) {
+        newOptions.scales.y.grid.color = colors.neutral300;
+      }
+      if (newOptions.scales?.x?.grid) {
+        newOptions.scales.x.grid.color = colors.neutral300;
+      }
+      if (newOptions.scales?.y?.ticks) {
+        newOptions.scales.y.ticks.color = colors.neutral800;
+      }
+      if (newOptions.scales?.x?.ticks) {
+        newOptions.scales.x.ticks.color = colors.neutral800;
+      }
+      if (newOptions.plugins?.legend?.labels) {
+        newOptions.plugins.legend.labels.color = colors.neutral800;
+      }
+
+      if (newOptions?.scales?.x?.ticks && newOptions?.scales?.y?.ticks) {
+        // sizing changes
+        const widthBreakpoint = chart.horizontal ? getHeightBreakpoint(chartRef) : getWidthBreakpoint(chartRef);
+        const heightBreakpoint = chart.horizontal ? getWidthBreakpoint(chartRef) : getHeightBreakpoint(chartRef);
+
+        if (widthBreakpoint === "xxs" || widthBreakpoint === "xs") {
+          newOptions.elements.point.radius = 0;
+        } else {
+          newOptions.elements.point.radius = chartOptions.elements?.point?.radius;
+        }
+
+        const realX = chart.horizontal ? "y" : "x";
+        const realY = chart.horizontal ? "x" : "y";
+
+        if (widthBreakpoint === "xxs" && chart.xLabelTicks === "default") {
+          newOptions.scales[realX].ticks.maxTicksLimit = 4;
+          newOptions.scales[realX].ticks.maxRotation = 25;
+        } else if (widthBreakpoint === "xs" && chart.xLabelTicks === "default") {
+          newOptions.scales[realX].ticks.maxTicksLimit = 6;
+          newOptions.scales[realX].ticks.maxRotation = 25;
+        } else if (widthBreakpoint === "sm" && chart.xLabelTicks === "default") {
+          newOptions.scales[realX].ticks.maxTicksLimit = 8;
+          newOptions.scales[realX].ticks.maxRotation = 25;
+        } else if (widthBreakpoint === "md" && chart.xLabelTicks === "default") {
+          newOptions.scales[realX].ticks.maxTicksLimit = 12;
+          newOptions.scales[realX].ticks.maxRotation = 90;
+        } else if (!chart.xLabelTicks) {
+          newOptions.scales[realX].ticks.maxTicksLimit = 16;
+        }
+
+        if (heightBreakpoint === "xs") {
+          newOptions.scales[realY].ticks.maxTicksLimit = 4;
+        } else {
+          newOptions.scales[realY].ticks.maxTicksLimit = 10;
         }
       }
 
-      return `${data[data.length - 1]}`;
+      return newOptions;
     }
 
-    return `${data}`;
+    return chartOptions;
   };
 
-  const _renderGrowth = (c) => {
-    if (!c) return (<span />);
-    const { status, comparison } = c;
-    
-    return (
-      <div style={{
-        display: 'block',
-        marginTop: chart.chartSize === 1 ? 10 : 0,
-        textAlign: 'center',
-      }}>
-        {status === 'positive' && <ArrowUp height="0.7rem" color="success500" />}
-        {status === 'negative' && <ArrowDown height="0.7rem" color="danger500" />}
-        <Typography variant="omega" style={{ color: Colors[status] }}>
-          {`${comparison}% `}
-        </Typography>
-        <Typography variant="pi" style={{ color: Colors.neutral, display: 'inline-block' }}>
-          {` last ${chart.timeInterval}`}
-        </Typography>
-      </div>
-    );
+  const _getDatalabelsOptions = () => {
+    return {
+      font: {
+        weight: "bold",
+        size: 10,
+        family: "Inter",
+        color: "white"
+      },
+      padding: 4,
+      borderRadius: 4,
+      formatter: Math.round,
+    };
+  };
+
+  const _getChartData = () => {
+    if (!chart?.chartData?.data?.datasets) return chart.chartData.data;
+
+    const newChartData = JSON.parse(JSON.stringify(chart.chartData.data));
+
+    newChartData?.datasets?.forEach((dataset, index) => {
+      if (dataset?.datalabels && index === chart.chartData.data.datasets.length - 1) {
+        newChartData.datasets[index].datalabels.color = colors.neutral800;
+      }
+    });
+
+    return newChartData;
   };
 
   return (
     <>
-      {chart.mode === 'kpi'
-        && chart.chartData
-        && chart.chartData.data
-        && chart.chartData.data.datasets && (
-        <Flex gap={2}>
-          {chart.chartData.data.datasets.map((dataset, index) => (
-            <Box key={dataset.id} padding={4} style={{ textAlign: 'center' }}>
-              <Typography
-                variant="alpha"
-                style={styles.kpiItem(
-                  chart.chartSize,
-                  chart.chartData.data.datasets.length,
-                  index,
-                  !!chart.chartData.growth,
-                )}
-                key={nanoid()}
-              >
-                {dataset.data && _getKpi(dataset.data)}
-              </Typography>
-              {chart.Datasets[index] && (
-                <Box paddingTop={chart.showGrowth ? -5 : 0 } style={{ textAlign: 'center' }}>
-                  {chart.showGrowth && chart.chartData.growth && (
-                    _renderGrowth(chart.chartData.growth[index])
-                  )}
-                  <Typography
-                    variant="epsilon"
-                    style={
-                      chart.Datasets
-                        && styles.datasetLabelColor(chart.Datasets[index].datasetColor)
-                    }
-                  >
-                    {dataset.label}
-                  </Typography>
-                </Box>
-              )}
-            </Box>
-          ))}
-        </Flex>
-      )}
-      <div style={{ height: "100%", paddingBottom: 10 }}>
+      <div style={{ height: "100%", width: '100%', display: 'flex', flexDirection: 'column' }} ref={chartRef}>
         {chart.chartData && chart.chartData.growth && chart.mode === 'kpichart' && (
           <KpiChartSegment chart={chart} editMode={editMode} />
         )}
-        {chart.mode !== 'kpi' && chart.chartData && chart.chartData.data && chart.chartData.data.labels && (
-          <Bar
-            data={chart.chartData.data}
-            options={strapifyChartData(chart.chartData).options}
-            redraw={redraw}
-          />
+        {chart.chartData && chart.chartData.data && chart.chartData.data.labels && (
+          <div style={{ flex: 1, minHeight: 0 }}>
+            <Bar
+              data={_getChartData()}
+              options={{
+                ..._getChartOptions(),
+                plugins: {
+                  ..._getChartOptions().plugins,
+                  datalabels: chart.dataLabels && _getDatalabelsOptions(),
+                },
+                maintainAspectRatio: false,
+                responsive: true,
+              }}
+              redraw={redraw}
+              plugins={chart.dataLabels ? [ChartDataLabels] : []}
+            />
+          </div>
         )}
       </div>
     </>
   );
 }
 
-const styles = {
-  kpiContainer: (size) => ({
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    display: 'flex',
-    flexDirection: size === 1 ? 'column' : 'row',
-  }),
-  kpiItem: (size, items, index) => ({
-    textAlign: 'center',
-    margin: 0,
-    marginBottom: size === 1 && index < items - 1 ? (50 - items * 10) : 0,
-    marginRight: index < items - 1 && size > 1 ? (40 * size) - (items * 8) : 0,
-  }),
-  datasetLabelColor: (color) => ({
-    borderBottom: `solid 3px ${color}`,
-  }),
-};
-
 BarChart.defaultProps = {
   redraw: false,
   redrawComplete: () => {},
-  height: 300,
   editMode: false,
 };
 
@@ -170,7 +176,6 @@ BarChart.propTypes = {
   chart: PropTypes.object.isRequired,
   redraw: PropTypes.bool,
   redrawComplete: PropTypes.func,
-  height: PropTypes.number,
   editMode: PropTypes.bool,
 };
 

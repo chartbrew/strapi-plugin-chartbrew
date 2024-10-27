@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { ArrowUp, ArrowDown } from '@strapi/icons';
-import { Box, Flex, Typography, Tooltip } from '@strapi/design-system';
+import { Box, Flex, Typography, Badge } from '@strapi/design-system';
 
 import { Colors } from '../../utils/colors';
 
@@ -29,14 +29,10 @@ function KpiChartSegment(props) {
             <Box>
               <Typography variant="beta">{`${c.value} `}</Typography>
               {chart.showGrowth && (
-                <Flex style={{ display: 'inline-block' }}>
-                  {c.status === 'positive' && <ArrowUp height="0.7rem" color="success500" />}
-                  {c.status === 'negative' && <ArrowDown height="0.7rem" color="danger500" />}
-                  <Tooltip description={`In the last ${chart.timeInterval}`} delay={100}>
-                    <Typography variant="omega" style={{ color: Colors[c.status] }}>
-                      {`${c.comparison}%`}
-                    </Typography>
-                  </Tooltip>
+                <Flex style={{ display: 'inline-block' }} alignItems="center">
+                  <Badge backgroundColor={c.status === 'positive' ? 'success100' : 'danger100'} textColor={c.status === 'positive' ? 'success600' : 'danger600'}>
+                    {`${c.comparison}%`}
+                  </Badge>
                 </Flex>
               )}
             </Box>
