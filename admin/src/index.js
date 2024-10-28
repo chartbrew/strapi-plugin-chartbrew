@@ -1,71 +1,66 @@
-import { prefixPluginTranslations } from '@strapi/helper-plugin';
-import pluginPkg from '../../package.json';
-import pluginId from './pluginId';
-import Initializer from './components/Initializer';
-import PluginIcon from './components/PluginIcon';
-
-const name = pluginPkg.strapi.name;
+import { getTranslation } from './utils/getTranslation';
+import { PLUGIN_ID } from './pluginId';
+import { Initializer } from './components/Initializer';
+import { PluginIcon } from './components/PluginIcon';
 
 export default {
   register(app) {
     app.addMenuLink({
-      to: `/plugins/${pluginId}`,
+      to: `plugins/${PLUGIN_ID}`,
       icon: PluginIcon,
       intlLabel: {
-        id: `${pluginId}.plugin.name`,
+        id: `${PLUGIN_ID}.plugin.name`,
         defaultMessage: 'Chartbrew',
       },
       Component: async () => {
-        const component = await import(/* webpackChunkName: "[request]" */ './pages/App');
+        const { App } = await import('./pages/App');
 
-        return component;
+        return App;
       },
-      permissions: [
-        // Uncomment to set the permissions of the plugin here
-        // {
-        //   action: '', // the action name should be plugin::plugin-name.actionType
-        //   subject: null,
-        // },
-      ],
     });
+
     app.createSettingSection(
       {
-        id: pluginId,
+        id: PLUGIN_ID,
         intlLabel: {
-          id: `${pluginId}.plugin.name`,
+          id: `${PLUGIN_ID}.plugin.name`,
           defaultMessage: 'Chartbrew',
         },
       },
       [
         {
           intlLabel: {
-            id: `${pluginId}.plugin.name`,
+            id: `${PLUGIN_ID}.plugin.name`,
             defaultMessage: 'Setup settings',
           },
           id: 'settings',
-          to: `/settings/${pluginId}`,
+          to: `/settings/${PLUGIN_ID}`,
           Component: async () => {
-            return import('./pages/Setup');
+            const { Setup } = await import('./pages/Setup');
+
+            return Setup;
           },
         },
       ]
     );
+
     app.registerPlugin({
-      id: pluginId,
+      id: PLUGIN_ID,
       initializer: Initializer,
       isReady: false,
-      name,
+      name: PLUGIN_ID,
     });
   },
 
-  bootstrap() {},
-  async registerTrads({ locales }) {
-    const importedTrads = await Promise.all(
-      locales.map(locale => {
+  async registerTrads(app) {
+    const { locales } = app;
+
+    const importedTranslations = await Promise.all(
+      locales.map((locale) => {
         return import(`./translations/${locale}.json`)
           .then(({ default: data }) => {
             return {
-              data: prefixPluginTranslations(data, pluginId),
+              data: getTranslation(data),
               locale,
             };
           })
@@ -78,6 +73,6 @@ export default {
       })
     );
 
-    return Promise.resolve(importedTrads);
+    return importedTranslations;
   },
 };

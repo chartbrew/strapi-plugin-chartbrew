@@ -1,6 +1,6 @@
 import { getSettings } from './store';
 import axiosInstance from '../utils/axiosInstance';
-import pluginId from '../pluginId';
+import { PLUGIN_ID } from '../pluginId';
 
 export async function getProjects() {
   const { host, token } = await getSettings();
@@ -117,7 +117,7 @@ export async function getProjectConnections(projectId) {
 }
 
 export async function generateTemplate(data) {
-  return axiosInstance.post(`/${pluginId}/generate`, data)
+  return axiosInstance.post(`/${PLUGIN_ID}/generate`, data)
     .then((project) => {      
       return project.data;
     })

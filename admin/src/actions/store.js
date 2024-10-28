@@ -1,14 +1,14 @@
 import axiosInstance from '../utils/axiosInstance';
-import pluginId from '../pluginId';
+import { PLUGIN_ID } from '../pluginId';
 
 export async function getSettings() {
-  const settings = await axiosInstance.get(`/${pluginId}/settings`);
+  const settings = await axiosInstance.get(`/${PLUGIN_ID}/settings`);
   
   return settings.data;
 }
 
 export async function setSettings(data) {
-  const response = await axiosInstance.post(`/${pluginId}/settings`, {
+  const response = await axiosInstance.post(`/${PLUGIN_ID}/settings`, {
     body: data,
   });
 

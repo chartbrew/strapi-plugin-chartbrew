@@ -3,7 +3,11 @@
  */
 
 import axios from 'axios';
-import { auth } from '@strapi/helper-plugin';
+
+let token = localStorage.getItem('jwtToken');
+if (token) {
+  token = token.replaceAll('"', '');
+}
 
 const instance = axios.create({
   baseURL: process.env.STRAPI_ADMIN_BACKEND_URL,
@@ -12,7 +16,7 @@ const instance = axios.create({
 instance.interceptors.request.use(
   async config => {
     config.headers = {
-      Authorization: `Bearer ${auth.getToken()}`,
+      Authorization: `Bearer ${token}`,
       Accept: 'application/json',
       'Content-Type': 'application/json',
     };
@@ -29,8 +33,7 @@ instance.interceptors.response.use(
   error => {
     // whatever you want to do with the error
     if (error.response?.status === 401) {
-      auth.clearAppStorage();
-      window.location.reload();
+      // window.location.reload();
     }
 
     throw error;
