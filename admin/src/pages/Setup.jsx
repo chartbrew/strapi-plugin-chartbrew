@@ -12,6 +12,7 @@ import {
   useNotification,
 } from '@strapi/strapi/admin';
 import { Magic, Check, Cross, ChevronRight, ExternalLink } from '@strapi/icons';
+import { Link as RouterLink } from 'react-router-dom';
 
 import { PLUGIN_ID } from '../pluginId';
 import { getSettings, setSettings } from '../actions/store';
@@ -296,7 +297,8 @@ const Setup = () => {
                 <LinkButton
                   variant="secondary"
                   endIcon={<ChevronRight />}
-                  href={`/plugins/${PLUGIN_ID}`}
+                  tag={RouterLink}
+                  to={`/plugins/${PLUGIN_ID}`}
                 >
                   Continue to your dashboard
                 </LinkButton>

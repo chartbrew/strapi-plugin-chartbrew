@@ -44,7 +44,7 @@ const controller = ({ strapi }) => ({
 
   async getModels(ctx) {
     try {
-      const models = await strapi.db.config.models;
+      const models = Object.keys(strapi.contentTypes).map((key) => strapi.contentTypes[key]);
 
       // re-format the structure and only fetch the collection types
       const formattedModels = models.filter((m) => m.kind === 'collectionType').map((model) => ({

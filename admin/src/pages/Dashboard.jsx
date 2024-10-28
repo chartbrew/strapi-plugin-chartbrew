@@ -14,6 +14,7 @@ import {
 import { Plus, ChartCircle, ExternalLink } from '@strapi/icons';
 import { WidthProvider, Responsive } from "react-grid-layout";
 import { Layouts } from '@strapi/strapi/admin';
+import { Link as RouterLink } from 'react-router-dom';
 
 import { PLUGIN_ID } from '../pluginId';
 import { getSettings, setSettings } from '../actions/store';
@@ -157,7 +158,7 @@ function Dashboard() {
         title="Dashboard"
         subtitle="Visualize your Strapi data"
         primaryAction={(
-          <LinkButton startIcon={<ChartCircle />} to={`/create`} disabled={!user.id}>
+          <LinkButton tag={RouterLink} startIcon={<ChartCircle />} to={`/plugins/${PLUGIN_ID}/create`} disabled={!user.id}>
             Create new visualizations
           </LinkButton>
         )}

@@ -8,9 +8,11 @@ import React, { useState, useEffect } from 'react';
 import {
   Typography, Button, Grid, Divider, Alert, SingleSelect,
   SingleSelectOption, Combobox, ComboboxOption, Checkbox, Box, Link,
+  Flex,
 } from '@strapi/design-system';
 import { ArrowLeft } from '@strapi/icons';
 import { Layouts } from '@strapi/strapi/admin';
+import { Link as RouterLink } from 'react-router-dom';
 
 import { PLUGIN_ID } from '../pluginId';
 import { getModels } from '../actions/model';
@@ -180,7 +182,7 @@ function Create() {
                 closeLabel="Close alert"
                 title="Chartbrew might not be able to create charts"
                 variant="danger"
-                action={(<Link to={`/settings/${PLUGIN_ID}`}>Click here to go to settings</Link>)}
+                action={(<Link tag={RouterLink} to={`/settings/${PLUGIN_ID}`}>Click here to go to settings</Link>)}
                 onClose={() => { }}
               >
                 {"It looks like your Strapi Backend URL is on localhost. Chartbrew's server will not be able to access your localhost environment. Please update your Strapi Backend URL to something like https://my-strapi-backend.com or self-host Chartbrew on the same server as your Strapi Backend."}
@@ -193,7 +195,7 @@ function Create() {
                 closeLabel="Close alert"
                 title="Chartbrew cannot create charts from your Strapi data"
                 variant="danger"
-                action={(<Link to={`/settings/${PLUGIN_ID}`}>Click here to go to settings</Link>)}
+                action={(<Link tag={RouterLink} to={`/settings/${PLUGIN_ID}`}>Click here to go to settings</Link>)}
                 onClose={() => { }}
               >
                 {'In order to allow Chartbrew to create visualizations for you, please add a Strapi API token in the settings. '}
@@ -206,7 +208,7 @@ function Create() {
                 closeLabel="Close alert"
                 title="Chartbrew cannot create charts from your Strapi data"
                 variant="danger"
-                action={(<Link to={`/settings/${PLUGIN_ID}`}>Click here to go to settings</Link>)}
+                action={(<Link tag={RouterLink} to={`/settings/${PLUGIN_ID}`}>Click here to go to settings</Link>)}
                 onClose={() => { }}
               >
                 {'Your Strapi backend URL is missing from the Chartbrew settings. Set it up by going to the settings page. '}
@@ -236,7 +238,7 @@ function Create() {
                 <Typography variant="delta">{'Select one of your collection types below '}</Typography>
               </Box>
               <Box paddingTop={4}>
-                <Grid gap={[3, 2, 2]}>
+                <Grid.Root gap={3}>
                   {models.map((model) => (
                     <Grid.Item key={model.uid} col={2} s={4} xs={6}>
                       <Button
@@ -248,7 +250,7 @@ function Create() {
                       </Button>
                     </Grid.Item>
                   ))}
-                </Grid>
+                </Grid.Root>
               </Box>
             </>
           )}
@@ -300,7 +302,7 @@ function Create() {
                 </Box>
               </Box>
               <Box paddingTop={4}>
-                <Grid gap={[4, 4, 4]}>
+                <Grid.Root gap={3}>
                   {templateCharts.map((chart) => (
                     <Grid.Item col={3} s={4} xs={6} key={chart.tid}>
                       <Checkbox
@@ -311,7 +313,7 @@ function Create() {
                       </Checkbox>
                     </Grid.Item>
                   ))}
-                </Grid>
+                </Grid.Root>
               </Box>
 
               <Box paddingTop={6} paddingBottom={6}>
@@ -359,7 +361,7 @@ function Create() {
                     closeLabel="Close alert"
                     title="The charts could not be created"
                     variant="danger"
-                    action={(<Link to={`/settings/${PLUGIN_ID}`}>Click here to go to settings</Link>)}
+                    action={(<Link tag={RouterLink} to={`/settings/${PLUGIN_ID}`}>Click here to go to settings</Link>)}
                     onClose={() => setGenerationError(false)}
                   >
                     {'There was an error generating your charts. Please make sure all your settings are correct and try again.'}
