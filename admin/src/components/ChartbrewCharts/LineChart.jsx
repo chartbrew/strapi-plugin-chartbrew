@@ -15,6 +15,7 @@ import {
   Tooltip,
   Legend,
   Filler,
+  LogarithmicScale,
 } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { useTheme } from 'styled-components';
@@ -24,7 +25,7 @@ import KpiChartSegment from './KpiChartSegment';
 import strapifyChartData from '../../utils/strapifyChartData';
 
 ChartJS.register(
-  CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler
+  CategoryScale, LinearScale, LogarithmicScale, PointElement, LineElement, Title, Tooltip, Legend, Filler
 );
 
 const dataLabelsPlugin = {

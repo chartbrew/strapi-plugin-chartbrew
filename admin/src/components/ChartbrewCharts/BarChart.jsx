@@ -15,6 +15,7 @@ import {
   Tooltip,
   Legend,
   Filler,
+  LogarithmicScale,
 } from 'chart.js';
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import { useTheme } from 'styled-components';
@@ -26,7 +27,7 @@ import strapifyChartData from '../../utils/strapifyChartData';
 import { getHeightBreakpoint, getWidthBreakpoint } from '../../utils/layoutBreakpoints';
 
 ChartJS.register(
-  CategoryScale, LinearScale, PointElement, BarElement, Title, Tooltip, Legend, Filler
+  CategoryScale, LinearScale, LogarithmicScale, PointElement, BarElement, Title, Tooltip, Legend, Filler
 );
 
 function BarChart(props) {
