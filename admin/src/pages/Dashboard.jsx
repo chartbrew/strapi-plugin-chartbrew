@@ -29,7 +29,7 @@ import PolarChart from '../components/ChartbrewCharts/PolarChart';
 import DoughnutChart from '../components/ChartbrewCharts/DoughnutChart';
 import Illo from '../components/Illo';
 import KpiChart from '../components/ChartbrewCharts/KpiChart';
-import { widthSize } from '../utils/layoutBreakpoints';
+import { widthSize, heightSize, cols, margin } from '../utils/layoutBreakpoints';
 
 const ResponsiveGridLayout = WidthProvider(Responsive, { measureBeforeMount: true });
 
@@ -45,7 +45,7 @@ function Dashboard() {
   const [team, setTeam] = useState({});
   const [teams, setTeams] = useState([]);
   const [dropdownTeam, setDropdownTeam] = useState('');
-  const [layouts, setLayouts] = useState({ xxs: [], xs: [], sm: [], md: [], lg: [] });
+  const [layouts, setLayouts] = useState(null);
 
   useEffect(() => {
     getSettings().then((data) => setStore(data));
@@ -87,7 +87,11 @@ function Dashboard() {
   useEffect(() => {
     if (charts && charts.length > 0) {
       // set the grid layout
-      const newLayouts = { xxs: [], xs: [], sm: [], md: [], lg: [] };
+      const newLayouts = Object.keys(widthSize).reduce((acc, key) => {
+        acc[key] = [];
+        return acc;
+      }, {});
+
       charts.forEach((chart) => {
         if (chart.layout) {
           Object.keys(chart.layout).forEach((key) => {
@@ -305,9 +309,9 @@ function Dashboard() {
               <ResponsiveGridLayout
                 className="layout"
                 layouts={layouts}
-                margin={{ lg: [12, 12], md: [12, 12], sm: [12, 12], xs: [12, 12], xxs: [12, 12] }}
+                margin={margin}
                 breakpoints={widthSize}
-                cols={{ lg: 12, md: 10, sm: 8, xs: 6, xxs: 4 }}
+                cols={cols}
                 rowHeight={150}
                 isDraggable={false}
                 isResizable={false}
