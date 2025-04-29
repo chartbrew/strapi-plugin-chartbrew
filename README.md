@@ -18,11 +18,6 @@
   </strong>
 </p>
 
-> **Note**
-> This plugin is compatible with Strapi v5.
-> 
-> If you are using Strapi v4, check out the [strapi-v4 branch](https://github.com/chartbrew/strapi-plugin-chartbrew/tree/strapi-v4) of this repository.
-
 <br />
 
 ![](https://raw.githubusercontent.com/chartbrew/strapi-plugin-chartbrew/master/admin/src/assets/strapi-chartbrew-dashboard.jpg)
@@ -36,6 +31,11 @@
 * Create dashboards from your collection types from the Strapi interface
 * Add charts to existing dashboards straight from Strapi
 * The charts are kept up-to-date automatically (you can set an update schedule on Chartbrew)
+
+## 📦 Plugin versions
+* If you are using Strapi v5 and Chartbrew v4, use version `3+`
+* If you are using Strapi v5 and Chartbrew v3, use version `2.x.x`
+* If you are using Strapi v4, use version `1.x.x`
 
 ## 👋 Get started with Chartbrew
 
