@@ -3,7 +3,7 @@ import { getSettings } from './store';
 export async function getUserTeam(userId) {
   const { host, token } = await getSettings();
 
-  return fetch(`${host}/team/user/${userId}`, {
+  return fetch(`${host}/team`, {
     method: 'GET',
     headers: new Headers({
       accept: 'application/json',

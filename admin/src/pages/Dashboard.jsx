@@ -233,7 +233,7 @@ function Dashboard() {
                 closeLabel="Close message"
                 title="Cannot authenticate to Chartbrew"
                 action={(
-                  <Link to={`/settings/${PLUGIN_ID}`}>Click here to configure your Chartbrew connection</Link>
+                  <div><Link to={`/settings/${PLUGIN_ID}`}>Click here to configure your Chartbrew connection</Link></div>
                 )}
               >
                 {'In order to access your Chartbrew dashboards, you must first set up the credentials in the settings menu. Click the link below to get started. '}
