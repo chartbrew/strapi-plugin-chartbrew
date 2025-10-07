@@ -1,6 +1,6 @@
 {
   "name": "@chartbrew/plugin-strapi",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "Chartbrew brings data visualization to your Strapi dashboard",
   "keywords": [],
   "homepage": "https://github.com/chartbrew/strapi-plugin-chartbrew#readme",
