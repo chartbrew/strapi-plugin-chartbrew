@@ -2,29 +2,6 @@ import { getSettings } from './store';
 import axiosInstance from '../utils/axiosInstance';
 import { PLUGIN_ID } from '../pluginId';
 
-export async function getProjects() {
-  const { host, token } = await getSettings();
-
-  return fetch(`${host}/project/user`, {
-    method: 'GET',
-    headers: new Headers({
-      accept: 'application/json',
-      authorization: `Bearer ${token}`,
-    }),
-  })
-    .then((response) => {
-      if (!response.ok) throw new Error('Cannot fetch user projects.');
-
-      return response.json();
-    })
-    .then((projects) => {
-      return projects;
-    })
-    .catch((err) => {
-      return Promise.reject(err);
-    });
-}
-
 export async function getProjectCharts(projectId) {
   const { host, token } = await getSettings();
 
@@ -46,6 +23,22 @@ export async function getProjectCharts(projectId) {
     .catch((err) => {
       return Promise.reject(err);
     });
+}
+
+export async function getProjectReport(brewName) {
+  const { host, token } = await getSettings();
+
+  const response = await fetch(`${host}/project/${brewName}/report`, {
+    method: 'GET',
+    headers: new Headers({
+      accept: 'application/json',
+      authorization: `Bearer ${token}`,
+    }),
+  });
+
+  if (!response.ok) throw new Error('Cannot fetch project report.');
+
+  return response.json();
 }
 
 export async function createProject(projectId, data) {

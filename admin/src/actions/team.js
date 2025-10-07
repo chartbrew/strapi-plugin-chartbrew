@@ -1,6 +1,6 @@
 import { getSettings } from './store';
 
-export async function getUserTeam(userId) {
+export async function getUserTeam() {
   const { host, token } = await getSettings();
 
   return fetch(`${host}/team`, {

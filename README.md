@@ -118,6 +118,29 @@ If you want to use the plugin with a managed service account at [chartbrew.com](
 
 ![](https://raw.githubusercontent.com/chartbrew/strapi-plugin-chartbrew/master/admin/src/assets/chartbrew-connection.jpg)
 
+### Cannot load the dashboards
+
+If you cannot load the dashboard, you may have to tweak the Strapi security settings. To do this, open the `config/middlewares.js` file and add the following attribute:
+
+```
+{
+  name: "strapi::security",
+  config: {
+    contentSecurityPolicy: {
+      useDefaults: true,
+      directives: {
+        "default-src": ["'self'"],
+        "frame-src": ["'self'", "https://app.chartbrew.com"], // allow Chartbrew iframe
+        // If your Strapi admin runs on localhost and does websockets, keep these sane too:
+        "connect-src": ["'self'", "ws://localhost:1337", "https://app.chartbrew.com"],
+      },
+    },
+  },
+}
+```
+
+If you are self-hosting Chartbrew, you will need to replace `https://app.chartbrew.com` with your own Chartbrew client URL.
+
 ### Cannot authenticate with Chartbrew
 
 [**Read more here**](https://github.com/chartbrew/strapi-plugin-chartbrew/issues/13)

@@ -9,29 +9,18 @@ import React, { useEffect, useState } from 'react';
 // import PropTypes from 'prop-types';
 import {
   Box, Flex, LinkButton, Link, Loader, Typography,
-  Combobox, ComboboxOption, SingleSelect, SingleSelectOption, Alert, EmptyStateLayout,
+  SingleSelect, SingleSelectOption, Alert, EmptyStateLayout,
+  Checkbox,
 } from '@strapi/design-system';
 import { Plus, ChartCircle, ExternalLink } from '@strapi/icons';
-import { WidthProvider, Responsive } from "react-grid-layout";
 import { Layouts } from '@strapi/strapi/admin';
 import { Link as RouterLink } from 'react-router-dom';
 
 import { PLUGIN_ID } from '../pluginId';
 import { getSettings, setSettings } from '../actions/store';
 import { login } from '../actions/user';
-import { getProjectCharts } from '../actions/project';
 import { getUserTeam } from '../actions/team';
-import BarChart from '../components/ChartbrewCharts/BarChart';
-import LineChart from '../components/ChartbrewCharts/LineChart';
-import PieChart from '../components/ChartbrewCharts/PieChart';
-import RadarChart from '../components/ChartbrewCharts/RadarChart';
-import PolarChart from '../components/ChartbrewCharts/PolarChart';
-import DoughnutChart from '../components/ChartbrewCharts/DoughnutChart';
 import Illo from '../components/Illo';
-import KpiChart from '../components/ChartbrewCharts/KpiChart';
-import { widthSize, heightSize, cols, margin } from '../utils/layoutBreakpoints';
-
-const ResponsiveGridLayout = WidthProvider(Responsive, { measureBeforeMount: true });
 
 function Dashboard() {
   const [store, setStore] = useState({});
@@ -39,30 +28,18 @@ function Dashboard() {
   const [projects, setProjects] = useState([]);
   const [pageLoading, setPageLoading] = useState(true);
   const [dropdownProject, setDropdownProject] = useState('');
-  const [charts, setCharts] = useState([]);
-  const [chartsLoading, setChartsLoading] = useState(true);
   const [authError, setAuthError] = useState(false);
   const [team, setTeam] = useState({});
   const [teams, setTeams] = useState([]);
   const [dropdownTeam, setDropdownTeam] = useState('');
-  const [layouts, setLayouts] = useState(null);
+  const [selectedProject, setSelectedProject] = useState({});
+  const [removeHeader, setRemoveHeader] = useState(false);
+  const [removeStyling, setRemoveStyling] = useState(false);
 
   useEffect(() => {
     getSettings().then((data) => setStore(data));
     _init();
   }, []);
-
-  useEffect(() => {
-    if (store.defaultProject) {
-      setChartsLoading(true);
-      getProjectCharts(store.defaultProject)
-        .then((data) => {
-          setCharts(data);
-          setChartsLoading(false);
-        })
-        .catch(() => setChartsLoading(false));
-    }
-  }, [store]);
 
   useEffect(() => {
     if (store.defaultTeam && teams.length > 0 && !dropdownTeam) {
@@ -78,45 +55,19 @@ function Dashboard() {
 
           if (selectedProject) {
             setDropdownProject(`${selectedProject.name}-${selectedProject.id}`);
+            setSelectedProject(selectedProject);
           }
         }
       }
     }
   }, [teams, store, dropdownTeam]);
 
-  useEffect(() => {
-    if (charts && charts.length > 0) {
-      // set the grid layout
-      const newLayouts = Object.keys(widthSize).reduce((acc, key) => {
-        acc[key] = [];
-        return acc;
-      }, {});
-
-      charts.forEach((chart) => {
-        if (chart.layout) {
-          Object.keys(chart.layout).forEach((key) => {
-            newLayouts[key].push({
-              i: chart.id.toString(),
-              x: chart.layout[key][0] || 0,
-              y: chart.layout[key][1] || 0,
-              w: chart.layout[key][2],
-              h: chart.layout[key][3],
-              minW: 2,
-            });
-          });
-        }
-      });
-
-      setLayouts(newLayouts);
-    }
-  }, [charts]);
-
   const _init = () => {
     login()
       .then(async (data) => {
         setUser(data);
 
-        const teamData = await getUserTeam(data.id);
+        const teamData = await getUserTeam();
         setTeams(teamData);
         setTeam(teamData[0]);
 
@@ -130,16 +81,18 @@ function Dashboard() {
       });
   };
 
-  const _onSelectProject = (projectValue) => {
+  const _onSelectProject = async (projectValue) => {
     if (!projectValue) return;
+
     const project = projects.filter((p) => `${p.name}-${p.id}` === projectValue)[0];
+    setSelectedProject(project);
+
     setDropdownProject(`${project.name}-${project.id}`);
     setSettings({ defaultProject: project.id })
       .then(() => {
         return getSettings();
       })
       .then((data) => setStore(data));
-
   };
 
   const _onSelectTeam = (teamValue) => {
@@ -195,19 +148,19 @@ function Dashboard() {
                 })}
               </SingleSelect>
 
-              <Combobox
+              <SingleSelect
                 label="Select a Chartbrew dashboard"
                 value={dropdownProject}
                 onChange={_onSelectProject}
               >
                 {projects.map((p) => {
                   return (
-                    <ComboboxOption key={p.id} value={`${p.name}-${p.id}`}>
+                    <SingleSelectOption key={p.id} value={`${p.name}-${p.id}`}>
                       {p.name}
-                    </ComboboxOption>
+                    </SingleSelectOption>
                   );
                 })}
-              </Combobox>
+              </SingleSelect>
             </Flex>
           </Box>
         )}
@@ -244,8 +197,8 @@ function Dashboard() {
 
         {!pageLoading && store.defaultTeam && user.id && projects.length > 0 && (
           <Box>
-            <Flex>
-              <Box paddingRight={4}>
+            <Flex wrap="wrap" gap={2}>
+              <Box>
                 <SingleSelect
                   label="Select a Chartbrew team"
                   value={dropdownTeam}
@@ -261,108 +214,54 @@ function Dashboard() {
                 </SingleSelect>
               </Box>
               <Box>
-                <Combobox
+                <SingleSelect
                   label="Select a Chartbrew dashboard"
                   placeholder="Select a dashboard"
                   value={dropdownProject}
                   onChange={_onSelectProject}
-                  loading={chartsLoading}
-                  loadingMessage="Fetching the charts..."
                 >
                   {projects.map((p) => {
                     return (
-                      <ComboboxOption key={p.id} value={`${p.name}-${p.id}`}>
+                      <SingleSelectOption key={p.id} value={`${p.name}-${p.id}`}>
                         {p.name}
-                      </ComboboxOption>
+                      </SingleSelectOption>
                     );
                   })}
-                </Combobox>
+                </SingleSelect>
               </Box>
-            </Flex>
 
-            <Box paddingTop={4}>
-              <Flex gap={1}>
-                {team && (
-                  <LinkButton
-                    href={`${store.clientHost}/${team.id}/${store.defaultProject}/dashboard`}
-                    variant="tertiary"
-                    target="_blank"
-                    rel="noopener"
-                    endIcon={<ExternalLink />}
-                  >
-                    Edit dashboard in Chartbrew
-                  </LinkButton>
-                )}
+              {selectedProject && (
+                <>
+                  <Checkbox paddingLeft={4} onCheckedChange={() => setRemoveHeader(!removeHeader)}>
+                    <Typography variant="delta">Remove header</Typography>
+                  </Checkbox>
+                  <Checkbox paddingLeft={4} onCheckedChange={() => setRemoveStyling(!removeStyling)}>
+                    <Typography variant="delta">Remove styling</Typography>
+                  </Checkbox>
+                </>
+              )}
+
+              {team && (
                 <LinkButton
-                  href="https://chartbrew.com/blog/create-your-strapi-visualization-dashboard-with-chartbrew?utm_source=strapi_plugin"
+                  href={`${store.clientHost}/${team.id}/${store.defaultProject}/dashboard`}
                   variant="tertiary"
                   target="_blank"
                   rel="noopener"
                   endIcon={<ExternalLink />}
                 >
-                  How to use Chartbrew with Strapi
+                  Edit dashboard in Chartbrew
                 </LinkButton>
-              </Flex>
-            </Box>
+              )}
+            </Flex>
 
-            <Box paddingTop={4}>
-              <ResponsiveGridLayout
-                className="layout"
-                layouts={layouts}
-                margin={margin}
-                breakpoints={widthSize}
-                cols={cols}
-                rowHeight={150}
-                isDraggable={false}
-                isResizable={false}
-              >
-                {charts.map((chart, index) => (
-                  <Box
-                    key={chart.id}
-                    background="neutral0"
-                    padding={4}
-                    hasRadius
-                    shadow="tableShadow"
-                    gap={2}
-                    style={{
-                      height: '100%',
-                      overflow: 'hidden',
-                      display: 'flex',
-                      flexDirection: 'column',
-                    }}
-                  >
-                    <Flex paddingBottom={2}>
-                      <Typography variant="delta">{chart.name}</Typography>
-                    </Flex>
-                    <div style={{ flex: 1, minHeight: 0 }}>
-                    {chart.chartData && chart.type === 'line' && (
-                      <LineChart chart={chart} />
-                      )}
-                      {chart.type === 'bar' && (
-                        <BarChart chart={chart} />
-                      )}
-                      {chart.type === 'pie' && (
-                        <PieChart chart={chart} />
-                      )}
-                      {chart.type === 'radar' && (
-                        <RadarChart chart={chart} />
-                      )}
-                      {chart.type === 'doughnut' && (
-                        <DoughnutChart chart={chart} />
-                      )}
-                      {chart.type === 'polar' && (
-                        <PolarChart chart={chart} />
-                      )}
-                      {chart.type === 'avg' && (
-                        <LineChart chart={chart} />
-                      )}
-                      {chart.type === 'kpi' && (
-                        <KpiChart chart={chart} />
-                      )}
-                    </div>
-                  </Box>
-                ))}
-              </ResponsiveGridLayout>
+            <Box paddingTop={4} height="100vh">
+              <iframe
+                key={`${removeHeader}-${removeStyling}`}
+                src={`${store.clientHost}/report/${selectedProject.brewName}?removeHeader=${removeHeader}&removeStyling=${removeStyling}`}
+                width="100%"
+                height="100%"
+                style={{ border: 'none', borderRadius: '10px' }}
+              />
             </Box>
           </Box>
         )}
